@@ -1,0 +1,72 @@
+---
+title: "Shonkwiler Homework Problem 4"
+author: "Stephanie K Moore"
+date: "1/18/2016"
+output: html_document
+---
+
+Problem:
+
+A reward is given for rolling a pair of dice by     
+r(x) = 1/x for where x is the probability of rolling 2, 3, ... 12  
+
+Estimate the expectation of r by simulation and compare to the theoretical value.
+
+For rolling 2 6-sided die the sample space is 36 and  the probabilities for 2 thru 12 are 1,2,3,4,5,6,5,4,3,2,1 (over 36).
+
+Doing sim 100,000 vs 1,000,000 times is negligible except 1,000,000 takes far longer.
+
+```{r}
+library(ggplot2)
+
+n <- 100000  # number of simulations
+
+# create mx for storing theoretical vs empirical probabilities
+# of getting 2 thru 12
+# row 1 = theo, row 2 = emp, row 3 = theo - emp
+p <- matrix(data = NA, nrow = 3, ncol = 11, dimnames = list(c("theo","emp","diff"),NULL)) 
+
+# vector of theoretical probabilities:
+p[1,] = c(1/36,2/36,3/36,4/36,5/36,6/36,5/36,4/36,3/36,2/36,1/36)
+  
+# find sum of 2 die for "n" rolls via simulation
+diesum <- vector(mode="integer", length = n)
+for (i in 1:n){
+  die1 <- sample(1:6, 1, replace = TRUE)
+  die2 <- sample(1:6, 1, replace = TRUE)
+  diesum[i] <- die1 + die2
+}
+# pe = probability, empirical
+pe <- vector(mode = "integer", length = 11)
+for (r in 2:12){
+  p[2,r-1] <- sum(diesum[1:n] == r)/n
+  p[3,r-1] <- p[1,r-1] - p[2,r-1]
+}
+p
+min(abs(p[3,]))
+max(abs(p[3,]))
+```
+
+Now for some graphs...
+
+scale_x_discrete(breaks=c("2","3","4","5","6","7","8","9","10","11","12")) +
+```{r}
+gp <- ggplot(data=as.data.frame(p), aes(x=as.data.frame(p[1,]), fill = as.data.frame(p[2,]))) + 
+  geom_density(stat = "density", position = "dodge") +
+  scale_fill_manual(values = c("green","blue")) +
+  labs(x = "\n Theoretical vs. Empirical Probability", y="Count", title = "Rolling 2 Dice: Theoretical vs. Empirical Probabilities") + 
+  theme_bw()
+gp
+
+ggplot(data = data.frame(tdata), aes(x = bodytemp)) +
+    geom_density(fill = "yellow", alpha = .3) +
+       stat_function(fun = dnorm, args = list(mu,sigma), colour = "red") + 
+       labs(x = "Body Temp", y = "",
+         title = "Density Plot of Population Body Temperatures\n Overlaid with Normal Density Curve in Red") +
+       theme_bw()
+```
+
+
+```{r}
+sessionInfo()
+```

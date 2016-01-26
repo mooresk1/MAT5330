@@ -1,0 +1,22 @@
+---
+title: "Chapter 1 Model"
+author: "Stephanie K Moore"
+date: "1/17/2016"
+output: html_document
+---
+#### Modeling How Long It Will Take to Read The Text ####
+ T = total time to read the book
+ p = average time to read a page
+ P = # pages (for this book, a constant)
+ w = how long it takes to work a checkmark
+ W = average # checkmarks per page 
+ A = choosing to take the double your reading speed course
+ B = choosing to take the double your reasoning speed course
+Model Equation: T = pP + wWP or P(p + wW)
+```{r}
+
+```
+
+```{r}
+sessionInfo()
+```

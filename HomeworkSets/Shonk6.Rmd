@@ -1,0 +1,8 @@
+---
+title: 'Shonkwiler Problem #6'
+author: "Stephanie K Moore"
+date: "1/26/2016"
+output: html_document
+---
+
+6. Generate a sequence of characters from the alphabet {a,b,c,d} with each new character chosen with equal probability and independently of the previous choices.  Now slide a "window" of length 4 along this sequence and record the words that you get.  How many characters do you expect to have to generate before you see all possible 4^4= 256 different words?  Use a simulation to answer this question.  Run the simulation for alphabet sizes of 5, 6, and 7 with window sizes 4 and 5.

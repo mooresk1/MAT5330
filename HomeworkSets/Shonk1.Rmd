@@ -1,0 +1,11 @@
+---
+title: "Shonkwiler Problem #1"
+author: "Stephanie K Moore"
+date: "1/26/2016"
+output: html_document
+---
+1. Perform a large number of trials of Buffon's needle problem and estimate the value of pi.  Plot the error as a function of the number of trials.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```

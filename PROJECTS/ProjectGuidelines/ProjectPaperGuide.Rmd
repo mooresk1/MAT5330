@@ -1,0 +1,20 @@
+---
+title: "Project Paper Guide"
+author: "Stephanie K. Moore"
+date: "1/22/2016"
+output: pdf_document
+---
+Remember to include in the paper:   
+    1. If your write-up is more than 3 pages, please separate the document into sections (it should be more than three pages).  Choose section titles that are both useful and relevant.    
+    2. Carefully describe what "best" means and what a solution entails.   
+    3. Carefully define the metric by which "best" will be evaluated.    
+    4. Explain the necessary calculations needed to calculate the metric.   
+    5. Explain possible methods of determining the optimal solution and justify your approach.    
+    6. Explain limitations of your approach and assumption you needed to make in order to use the approach and get your solution.   
+    7. If there are special cases to consider, outline each of them.  You may choose a single case to completely address, but all cases should be documented.   
+    8. Explain your method and report your solution.    
+    9. Include a sensitivity analysis of your solution.  That is, how much better is your solution than others.  Is the solution unique?   
+    10. Explain how your method might be applied to a more general setting.   
+    11. Explain how some of the limitations of your approach might be reduced.   
+    12. Make concluding remarks about the usefulness of your model.  These concluding remarks may include subjective statements.  You are welcome, and perhaps encouraged, to discuss your modeling process rather than just the final result.   
+    13. Photos, diagrams, and other graphics are encouraged.  At least one diagram or photo is required.

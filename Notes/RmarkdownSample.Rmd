@@ -1,0 +1,20 @@
+---
+title: "Math Modeling"
+author: "Stephanie K Moore"
+date: "1/13/2016"
+output: html_document
+---
+
+```{r}
+height <- c(73,50,68,72,63,64,70.5,60,68,72)
+mean(height)
+```
+
+The mean of the height values is: `r mean(height)`.
+
+The mean is written as $\bar{x}=\sum_{i=1}^{n}\frac{x_i}{n}$.
+
+
+```{r}
+sessionInfo()
+```

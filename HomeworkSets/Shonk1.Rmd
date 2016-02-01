@@ -8,4 +8,25 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+# generate x and theta randomly
+# set d and L # let L = 1 and d = 2
+# find out how many times
+# this is how they solved the atom bomb calculations - with Monte Carlo simulations
+d <- 2    # distance between boards
+L <- 1    # length of needle
+n <- 100000   # number of needles
+m <- 10000      # number of trials
+pie <- numeric(m) # allocate space 
+for (i in 1:m){
+  theta <- (pi/2)*runif(n)  # drop them at random angles
+  x <- (d/2)*runif(n)       # in random spots on the board
+  hits <- (x<L/2*sin(theta))   # count how many cross the line (<= won't matter in real life)
+  perc <- sum(hits)/n
+  pie[i] <- 1/perc
+}
+hist(pie)
+summary(pie)
+# no need for loop, runif does it as one long vector
+
 ```

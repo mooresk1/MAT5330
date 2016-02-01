@@ -1,0 +1,22 @@
+---
+title: "Area Under Curve"
+author: "Stephanie K Moore"
+date: "1/29/2016"
+output: html_document
+---
+
+```{r}
+n <- 1000
+sqa <- 4
+circa <- pi
+
+x <- 2*runif(n)
+y <- 2*runif(n)
+incir <- sum(x^2+y^2<4)/n
+estpi <- 4*incir
+estpi
+```
+
+```{r}
+sessionInfo()
+```

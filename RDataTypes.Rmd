@@ -1,0 +1,27 @@
+---
+title: "R Data Type Functions"
+author: "Stephanie K Moore"
+date: "2/1/2016"
+output: html_document
+---
+
+Taken from: http://www.statmethods.net/input/datatypes.html
+
+R has a wide variety of data types including scalars, vectors (numerical, character, logical), matrices, data frames, lists, arrays and factors.
+
+length(object) # number of elements or components
+str(object)    # structure of an object
+class(object)  # class or type of an object
+names(object)  # names
+
+c(object,object,...)       # combine objects into a vector
+cbind(object, object, ...) # combine objects as columns
+rbind(object, object, ...) # combine objects as rows
+
+object     # prints the object
+
+ls()       # list current objects
+rm(object) # delete an object
+
+newobject <- edit(object) # edit copy and save as newobject
+fix(object)               # edit in place 

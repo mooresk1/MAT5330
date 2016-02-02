@@ -5,26 +5,26 @@ date: "Sys.Date()"
 output: html_document
 ---
 
-Problem:
+Problem as stated by Dr. Marland:
+4. Suppose a "reward" r(x) is given upon the roll of a pair of dice as follows: r(x) = 1/x, for 2,3, ... , 12.  Estimate the expectation of r by simulation and compare to the theoretical value.
 
-A reward is given for rolling a pair of dice by     
-r(x) = 1/x for where x is the probability of rolling 2, 3, ... 12  
+A reward is given for rolling a pair of dice by r(x) = 1/x (where x is the probability of rolling 2, 3, ... 12)  
 
-for x = 2 thru 12
-r(x) = 36,18,12,9,7.2,6,7.2,9,12,18,36 respectively
+for x = 2 thru 12   
+    r(x) = 36,18,12,9,7.2,6,7.2,9,12,18,36 respectively
 
 Estimate the expectation of r by simulation and compare to the theoretical value.
 
 E(x) = sum of all possible values (value times P(value)) (weighted average)
 
-For rolling 2 6-sided die the sample space is 36 and the probabilities for 2 thru 12 are 1,2,3,4,5,6,5,4,3,2,1 (over 36).
-
+For rolling 2 6-sided die the sample space is 36 and the probabilities for 2 thru 12 are    
+    1/36,2/36,3/36,4/36,5/36,6/36,5/36,4/36,3/36,2/36,1/36
+    
+So theoretical probabilities are        
+    P(2,12)=0.02777, P(3,11)=0.05555, P(4,10)=0.083333, P(5,9)=0.11111, P(6,8)=0.13888, P(7)=0.16666
+    
 ```{r}
 library(ggplot2)
-die <- c(2,3,4,5,6,7,8,9,10,11,12)
-rx <- c(36,18,12,9,7.2,6,7.2,9,12,18,36)
-prb <- c(1/36,2/36,3/36,4/36,5/36,6/36,5/36,4/36,3/36,2/36,1/36) # theoretical probability of rolling 2 thru 12
-prb
 n <- 10 # number of trials
 for (i in 2:12){
   prb[i-1] <- i*prb[i-1]
@@ -32,14 +32,14 @@ for (i in 2:12){
 prb
 ev <- sum(prb)  # theoretical expected value = 7
 
-n <- 100000      # number of trials
+n <- 10      # number of trials
 # runif gives uniform probability distrib (normal distrib)
-emproll <- sample(2:12,n,replace=TRUE)
-
+emproll <- sample(2:12,n,replace=TRUE) # empirical simulation
+emproll
 for (i in 2:12){
   emproll[i-1] <- i*sum(emproll[1:n] == i)/n
 }
-
+emproll
 empev <- sum(emproll)/n
 empev
 ```

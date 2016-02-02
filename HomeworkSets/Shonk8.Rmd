@@ -12,3 +12,28 @@ output: html_document
     c) Report the sample mean of the 200 walks
     d) Report the sample variance of the 200 walks
     e) compare the mean and variance to their theoretical values
+    
+```{r}
+n <- 30
+step <- vector(length=30)
+line <- vector(length=61) # Position 31 is the center (start point)
+pos <-31
+for (i in 1:n){
+  step[i] <- rbinom(1,1,.6)       #if 1 then H, else T
+  if(step[i] == 1){
+    pos <- pos + 1
+} else {
+    pos <- pos - 1
+}
+} 
+step
+sum(step) # gives total number of heads (steps to right)
+pos
+plot(step,type = "b")
+```
+
+
+
+```{r}
+sessionInfo()
+```

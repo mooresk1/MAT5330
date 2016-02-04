@@ -4,11 +4,20 @@ author: "Stephanie K Moore"
 date: "1/29/2016"
 output: html_document
 ---
+his code 
+
+roll <- sample(c(-1,1),n,replace=TRUE)
+for (i in 1:n){
+tot<-yu+sum(roll(1:i))
+if {(tot==0)} then return(i)} # i went broke
+if (tot==(ewe+bank)) then return(-i)
 
 ```{r}
 library(ggplot2)
 n <- 100     # number of trials
 length <- numeric(n)
+sum(sample(c(-1,1),n,replace=TRUE))
+
 for (j in 1:n){
   you <- 10    # starting $
   bank <- 1000   # starting $

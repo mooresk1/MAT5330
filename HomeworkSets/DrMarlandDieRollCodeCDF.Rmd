@@ -1,0 +1,20 @@
+---
+title: "DrMarlandsDieCDFCode"
+author: "Stephanie K Moore"
+date: "2/16/2016"
+output: html_document
+---
+
+```{r}
+
+n <- 100000 # number of trials
+cdf <- numeric()
+
+roll1 <- sample(1:6,n,replace=TRUE)
+roll2 <- sample(1:6,n,replace=TRUE)
+tot <- roll1 + roll2
+for (i in 1:150){
+  cdf[i] <- length(tot[tot<=i/10])
+}
+plot(1:150,cdf/n,type="l")
+```

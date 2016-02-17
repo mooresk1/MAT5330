@@ -1,0 +1,67 @@
+---
+title: "Beer"
+author: "Stephanie K Moore"
+date: "2/10/2016"
+output: html_document
+---
+
+http://gizmodo.com/the-fastest-way-to-cool-down-beer-1472736442
+
+Room Temp = 70F
+Beer Init = 70F
+Tap Water = 58F (like a cave should be close to avg temp over the year at that location)
+Beer in fridge after 10 min = 65F
+Fridge = 50F
+12 12oz CANS as follows:  3 Imperial Stouts, 6 Scotch Ales, 3 IPA
+How long until the beer reaches 50F?
+
+F=1.8C + 32
+
+dT/dt = k (Temp of surr - Temp of obj)
+
+In our case, dT/dt = k (50-beer) or dT/(beer-50) = -k dt
+Integrating both sides you get: beer - 50 = ce^(-kt)
+Plugging in the initial temp of the beer and t=0, you get c=20 so
+T(t) = 50 + 20e^(-kt)
+
+After 10 minutes the beer is 65F, so
+65 = 50 + 20e^(-10k) or k = (ln (3/4))/-10 = .02877
+
+Thus for the beer to reach 52 degrees
+52 = 50 + 20e^(-.02877t), t = 80 minutes and for 51 degrees it goes up to 104 minutes!
+
+```{r setup, include=FALSE}
+t <- 10 # time
+tobj <- 65  #init temp of beer
+tsurr <- 50 # temp of fridge
+troom <- 70
+k <- 1/20
+# integrate from time 0 to 10 to find k
+f<-function(x){
+  -1*k*(tobj-tsurr)
+}
+f(t)
+integrate(f,0,t)
+tfinal <- tsurr + ((tobj - tsurr)*exp(-k*t))
+tfinal
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

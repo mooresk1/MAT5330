@@ -1,11 +1,13 @@
-10---
+---
 title: "Shonkwiler Homework Problem 4"
 author: "Stephanie K Moore"
 date: "`r Sys.Date()`"
 output: html_document
 ---
+## The Expected Value of a Reward Given By r(x) = 1/x When Rolling a Pair of Dice ##    
+#### Comparison of the Theoretical Value With a Simulated Empirical Value ####    
 
-*Suppose you roll a pair of dice and receive a reward equal to 1/roll. Estimate the expected value of the reward by simulation and compare to the theoretical value.*
+*Suppose you roll a pair of dice and receive a reward equal to 1/roll. Estimate the expected value of the reward by simulation and compare to the theoretical value.*   
 
 So for x = 2 thru 12, the reward (R(x)) is 1/2, 1/3 ... 1/11, 1/12 respectively.   
 
@@ -22,15 +24,15 @@ library(ggplot2)
 tev <- numeric() # expected value of reward for each roll value
 tev[1] <- 0 # no such thing as rolling a 1, but it makes the computation easier
 for (i in 2:7){
-  tev[i] <- (1/i)*(i-1)/36 # ex. E(4) = 1/4 * 3/36
+  tev[i] <- (1/i)*(i-1)/36 # ex. E(4) = 1/4 * 3/36 
 }
 j <- 3
 for (i in 8:12){
   tev[i] <- (1/i)*(i-j)/36  # ex. E(9) is 1/9 * (9-5)/36
   j <- j+2
 }
-tev
-thereward <- sum(tev)
+tev # This immediately displays the expected value of the reward for each roll ...
+thereward <- sum(tev)  # the theoretical expected value of rolling 2 dice
 # Now find the empirical expected value...
 n <- 500000 # number of trials
 die1 <- sample(1:6,n,replace=TRUE)
@@ -41,7 +43,7 @@ countnum[1] <- 0 # no roll of 1 possible
 for (i in 2:12){
    countnum[i] <- length(which(roll == i)) # count up the # of times 2, 3, 4, ... 12 were each rolled
 }
-countnum
+countnum[2:12] # This immediately displays how many of 500,000 rolls were 2, 3 ... 11, 12
 eev <- numeric() # summing eev will give the empirical expected value of the reward
 eev[1] <- 0 # roll can't equal to 1
 for (i in 2:12){ 
@@ -50,9 +52,12 @@ for (i in 2:12){
   else {
     eev[i] <- (1/i)*countnum[i]/n}
 }  
-eev
-empreward <- sum(eev)
+eev[2:12] # This immediately displays the empirical expected value for each roll 2-12 (though 1 is not possible)
+empreward <- sum(eev) # ta-da! the empirical expecte value of the reward
 ```
+Dice Roll | 2 |  3 |  4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+------------------|----|-----|----
+Number of Times Rolled | `r countnum[2]` | `r countnum[3]` | `r countnum[4]` | `r countnum[5]` | `r countnum[6]` | `r countnum[7]` | `r countnum[8]` | `r countnum[9]` | `r countnum[10]` | `r countnum[11]` | `r countnum[12]`
 
 **The theoretical expected value of the reward is: `r thereward` dollars.**      
 **The empirical expected value of the reward is: `r empreward` dollars.**

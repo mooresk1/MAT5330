@@ -4,29 +4,82 @@ author: "Stephanie K Moore"
 date: "1/26/2016"
 output: html_document
 ---
+## Buffon's Needle ##
+
 1. Perform a large number of trials of Buffon's needle problem and estimate the value of pi.  Plot the error as a function of the number of trials.
+
+**For this problem, I tested both increasing the number of trials while holding the number of needles constant as well as increasing the number of needles and holding the number of trials constant. I wanted to see which one, if any, affected the approximation of pi more and how.**
 
 ```{r}
 library(ggplot2)
+set.seed(222)
 # generate x and theta randomly
 # set d and L # let L = 1 and d = 2
 # find out how many times
-# this is how they solved the atom bomb calculations - with Monte Carlo simulations
 d <- 2    # distance between boards
 L <- 1    # length of needle
-n <- 50000  # number of needles
-m <- 10000  # number of trials
-pie <- numeric(m) # allocate space 
-# no need for loop, runif does it as one long vector
-for (i in 1:m){
-  theta <- (pi/2)*runif(n)  # drop them at random angles
-  x <- (d/2)*runif(n)       # in random spots on the board
-  hits <- (x<L/2*sin(theta))   # count how many cross the line (<= won't matter in real life) T=1 F=0
-  perc <- sum(hits)/n      # find the percent that hit line
-  pie[i] <- 1/perc         # inverse should approx pi
-}
-hist(pie)
-summary(pie)
+pie <- numeric()   # allocate space for pi values 
+terr <- numeric()  # allocate space for error values
+###########################################################
+#### This section holds the number of needles constant ####
+#### at 10,000 and varies the number of trials (t)     ####
+###########################################################
+n <- 10000                     # number of needles
+t <- c(10,100,250,500,1000,2000,4000,6000,8000,10000) 
+pie <- numeric()               # allocate space for pi values 
+terr <- numeric()
+for (i in 1:length(t)){ 
+  for (j in 1:t[i]){              
+    theta <- (pi/2)*runif(n)   # drop n needles at random angles
+    x <- (d/2)*runif(n)        # in random spots on the board
+    hits <- (x<L/2*sin(theta)) # count how many cross the line T=1 F=0
+    perc <- sum(hits)/n        # find the percent that hit line
+    if (perc != 0){
+      pie[j] <- 1/perc}        # inverse should approx pi
+    else {
+      pie[j] == 0} 
+  }
+  terr[i] <- abs(sum(pie)/t[i] - pi) # amount of error from pi
+} 
+ggplot(data = as.data.frame(terr), aes(x = t, y = terr)) +
+  geom_point(color = "green") +
+  theme_bw() +
+  labs(x = "# of trials", y = "amount off from pi", title = "Needles = 10,000 With Trials Increasing") 
 ```
 
-*Interestingly, increasing the number of needles rather than the number of trials is what improved the approximation of pi.*
+
+```{r}
+########################################################
+##### This section holds trials constant at 10,000 #####
+##### and varies the number of needles  (n)        #####
+########################################################
+n <- c(10,100,250,500,1000,2000,4000,6000,8000,10000)
+t <- 10000                       # number of trials
+for (i in 1:length(n)){ 
+  for (j in 1:t){              
+    theta <- (pi/2)*runif(n[i])  # drop n needles at random angles
+    x <- (d/2)*runif(n[i])       # in random spots on the board
+    hits <- (x<L/2*sin(theta))   # cross line? T=1 F=0
+    perc <- sum(hits)/n[i]       # find percent that cross line
+    if (perc == 0){
+      pie[j] <- 0}               # inverse should approx pi
+    else {
+      pie[j] <- 1/perc} 
+  }
+  if (is.na(sum(pie))){          # determine the amount of error
+    terr[i] <- 0}
+  else {
+    terr[i] <- abs(sum(pie)/t - pi)}
+} 
+ggplot(data = as.data.frame(terr), aes(x = n, y = terr)) +
+  geom_point(color = "green") +
+  theme_bw() +
+  labs(x = "# of needles", y = "amount off from pi", 
+  title = "Trials = 10,000, Needles Increase\nNeedle Values: 10,100,250,500,1000,2000,4000,6000,8000,10000") 
+```
+
+#### Interestingly, increasing the number of needles rather than the number of trials improves the approximation of pi faster and keeps it consistently closer to the actual value than does increasing the number of trials. ####
+
+```{r}
+sessionInfo()
+```

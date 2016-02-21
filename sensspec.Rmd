@@ -1,0 +1,23 @@
+---
+title: "MeanandVar"
+author: "Stephanie K Moore"
+date: "2/19/2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+roll <- c(0,0,0,0,0,0)
+for(i in 1:6){
+  roll[i] <- ((i-3.5)^2)*(1/6)
+}
+sum(roll)
+
+sensitivity and specificity
+sens <- .99
+spec <- .98
+actpos <- m
+actneg <- n
+testpos <- sens(actpos)+spec(actneg)
+testposactpos <- sen(actpos)/testpos
+
+```

@@ -1,0 +1,30 @@
+---
+title: "UniqueCombWordGen"
+author: "Stephanie K Moore"
+date: "2/20/2016"
+output: html_document
+---
+```{r}
+# Window size - 4 then 5
+# Word size remains a constant 4
+wd <- matrix()  # set up mx to hold all possible words
+for (W in 4:5){         # vary size of window
+  for (A in 4:7){       # vary alphabet size
+    abet <- letters[1:4]
+    # Generate all possible 4-letter words in alph. order:
+    i <- 1
+    for (w in 1:length(abet)){
+      for (x in 1:length(abet)){
+        for (y in 1:length(abet)){
+          for (z in 1:length(abet)){
+            wd[i] <-paste(c(abet[w],abet[x],abet[y],abet[z]),
+                          collapse="")
+            i <- i+1
+          }
+        }
+      }
+    } 
+    # Now that we have all possible words...
+  }
+}
+```

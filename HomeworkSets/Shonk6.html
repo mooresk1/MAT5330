@@ -67,328 +67,64 @@ img {
 </div>
 
 
+<div id="generating-words-from-characters-how-long" class="section level2">
+<h2>Generating Words from Characters, How Long?</h2>
 <ol start="6" style="list-style-type: decimal">
 <li>Generate a sequence of characters from the alphabet {a,b,c,d} with each new character chosen with equal probability and independently of the previous choices. Now slide a “window” of length 4 along this sequence and record the words that you get.</li>
 </ol>
-<p>How many characters do you expect to have to generate before you see all possible 4^4= 256 different words?</p>
-<p><strong>The probability of getting any given combination of 4 letters is (1/4)x(1/4)x(1/4)x(1/4) = 1/256</strong><br /><strong>Since there are 256 possible words, and you want to get ALL of them, I would expect you would have to generate 256 raised to the 256 IF the window goes 4 letters at a time. If it goes one letter at a time (so that “bcada…” forms both “bcad” and “cada” etc) then … I’m not sure it changes?</strong></p>
+<p>How many characters do you expect to have to generate before you see all possible 4^4 = 256 different words?</p>
 <p>Use a simulation to answer this question. Run the simulation for alphabet sizes of 5, 6, and 7 with window sizes 4 and 5.</p>
-<pre class="r"><code># Generate total possible words in alphabetical order:
-abet &lt;- vector(&quot;list&quot;,4)
-abet &lt;- c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
-wd &lt;- matrix()
-i &lt;- 1
-for (w in 1:length(abet)){
-  for (x in 1:length(abet)){
-    for (y in 1:length(abet)){
-      for (z in 1:length(abet)){
-        wd[i] &lt;- paste(c(abet[w],abet[x],abet[y],abet[z]),collapse=&quot;&quot;)
-        i &lt;- i+1
+<p><strong>The probability of getting any given combination of 4 letters is (1/4)x(1/4)x(1/4)x(1/4) = 1/256. While you will certainly get A combination of letters, the actual probability of getting a particular combination is zero? Therefore, theoretically you might NEVER get all the possible combinations</strong></p>
+<pre class="r"><code># Window size - 4 then 5
+# Word size remains a constant 4
+wd &lt;- matrix()  # set up mx to hold all possible words
+for (W in 4:5){         # vary size of window
+  for (A in 4:7){       # vary alphabet size
+    abet &lt;- letters[1:4]
+    # Generate all possible 4-letter words in alph. order:
+    i &lt;- 1
+    for (w in 1:length(abet)){
+      for (x in 1:length(abet)){
+        for (y in 1:length(abet)){
+          for (z in 1:length(abet)){
+            wd[i] &lt;-paste(c(abet[w],abet[x],abet[y],abet[z]),
+                          collapse=&quot;&quot;)
+            i &lt;- i+1
+          }
+        }
       }
-    }
+    } 
+    # Now that we have all possible words...
   }
 }
-wd</code></pre>
-<pre><code>##   [1] &quot;aaaa&quot; &quot;aaab&quot; &quot;aaac&quot; &quot;aaad&quot; &quot;aaba&quot; &quot;aabb&quot; &quot;aabc&quot; &quot;aabd&quot; &quot;aaca&quot; &quot;aacb&quot;
-##  [11] &quot;aacc&quot; &quot;aacd&quot; &quot;aada&quot; &quot;aadb&quot; &quot;aadc&quot; &quot;aadd&quot; &quot;abaa&quot; &quot;abab&quot; &quot;abac&quot; &quot;abad&quot;
-##  [21] &quot;abba&quot; &quot;abbb&quot; &quot;abbc&quot; &quot;abbd&quot; &quot;abca&quot; &quot;abcb&quot; &quot;abcc&quot; &quot;abcd&quot; &quot;abda&quot; &quot;abdb&quot;
-##  [31] &quot;abdc&quot; &quot;abdd&quot; &quot;acaa&quot; &quot;acab&quot; &quot;acac&quot; &quot;acad&quot; &quot;acba&quot; &quot;acbb&quot; &quot;acbc&quot; &quot;acbd&quot;
-##  [41] &quot;acca&quot; &quot;accb&quot; &quot;accc&quot; &quot;accd&quot; &quot;acda&quot; &quot;acdb&quot; &quot;acdc&quot; &quot;acdd&quot; &quot;adaa&quot; &quot;adab&quot;
-##  [51] &quot;adac&quot; &quot;adad&quot; &quot;adba&quot; &quot;adbb&quot; &quot;adbc&quot; &quot;adbd&quot; &quot;adca&quot; &quot;adcb&quot; &quot;adcc&quot; &quot;adcd&quot;
-##  [61] &quot;adda&quot; &quot;addb&quot; &quot;addc&quot; &quot;addd&quot; &quot;baaa&quot; &quot;baab&quot; &quot;baac&quot; &quot;baad&quot; &quot;baba&quot; &quot;babb&quot;
-##  [71] &quot;babc&quot; &quot;babd&quot; &quot;baca&quot; &quot;bacb&quot; &quot;bacc&quot; &quot;bacd&quot; &quot;bada&quot; &quot;badb&quot; &quot;badc&quot; &quot;badd&quot;
-##  [81] &quot;bbaa&quot; &quot;bbab&quot; &quot;bbac&quot; &quot;bbad&quot; &quot;bbba&quot; &quot;bbbb&quot; &quot;bbbc&quot; &quot;bbbd&quot; &quot;bbca&quot; &quot;bbcb&quot;
-##  [91] &quot;bbcc&quot; &quot;bbcd&quot; &quot;bbda&quot; &quot;bbdb&quot; &quot;bbdc&quot; &quot;bbdd&quot; &quot;bcaa&quot; &quot;bcab&quot; &quot;bcac&quot; &quot;bcad&quot;
-## [101] &quot;bcba&quot; &quot;bcbb&quot; &quot;bcbc&quot; &quot;bcbd&quot; &quot;bcca&quot; &quot;bccb&quot; &quot;bccc&quot; &quot;bccd&quot; &quot;bcda&quot; &quot;bcdb&quot;
-## [111] &quot;bcdc&quot; &quot;bcdd&quot; &quot;bdaa&quot; &quot;bdab&quot; &quot;bdac&quot; &quot;bdad&quot; &quot;bdba&quot; &quot;bdbb&quot; &quot;bdbc&quot; &quot;bdbd&quot;
-## [121] &quot;bdca&quot; &quot;bdcb&quot; &quot;bdcc&quot; &quot;bdcd&quot; &quot;bdda&quot; &quot;bddb&quot; &quot;bddc&quot; &quot;bddd&quot; &quot;caaa&quot; &quot;caab&quot;
-## [131] &quot;caac&quot; &quot;caad&quot; &quot;caba&quot; &quot;cabb&quot; &quot;cabc&quot; &quot;cabd&quot; &quot;caca&quot; &quot;cacb&quot; &quot;cacc&quot; &quot;cacd&quot;
-## [141] &quot;cada&quot; &quot;cadb&quot; &quot;cadc&quot; &quot;cadd&quot; &quot;cbaa&quot; &quot;cbab&quot; &quot;cbac&quot; &quot;cbad&quot; &quot;cbba&quot; &quot;cbbb&quot;
-## [151] &quot;cbbc&quot; &quot;cbbd&quot; &quot;cbca&quot; &quot;cbcb&quot; &quot;cbcc&quot; &quot;cbcd&quot; &quot;cbda&quot; &quot;cbdb&quot; &quot;cbdc&quot; &quot;cbdd&quot;
-## [161] &quot;ccaa&quot; &quot;ccab&quot; &quot;ccac&quot; &quot;ccad&quot; &quot;ccba&quot; &quot;ccbb&quot; &quot;ccbc&quot; &quot;ccbd&quot; &quot;ccca&quot; &quot;cccb&quot;
-## [171] &quot;cccc&quot; &quot;cccd&quot; &quot;ccda&quot; &quot;ccdb&quot; &quot;ccdc&quot; &quot;ccdd&quot; &quot;cdaa&quot; &quot;cdab&quot; &quot;cdac&quot; &quot;cdad&quot;
-## [181] &quot;cdba&quot; &quot;cdbb&quot; &quot;cdbc&quot; &quot;cdbd&quot; &quot;cdca&quot; &quot;cdcb&quot; &quot;cdcc&quot; &quot;cdcd&quot; &quot;cdda&quot; &quot;cddb&quot;
-## [191] &quot;cddc&quot; &quot;cddd&quot; &quot;daaa&quot; &quot;daab&quot; &quot;daac&quot; &quot;daad&quot; &quot;daba&quot; &quot;dabb&quot; &quot;dabc&quot; &quot;dabd&quot;
-## [201] &quot;daca&quot; &quot;dacb&quot; &quot;dacc&quot; &quot;dacd&quot; &quot;dada&quot; &quot;dadb&quot; &quot;dadc&quot; &quot;dadd&quot; &quot;dbaa&quot; &quot;dbab&quot;
-## [211] &quot;dbac&quot; &quot;dbad&quot; &quot;dbba&quot; &quot;dbbb&quot; &quot;dbbc&quot; &quot;dbbd&quot; &quot;dbca&quot; &quot;dbcb&quot; &quot;dbcc&quot; &quot;dbcd&quot;
-## [221] &quot;dbda&quot; &quot;dbdb&quot; &quot;dbdc&quot; &quot;dbdd&quot; &quot;dcaa&quot; &quot;dcab&quot; &quot;dcac&quot; &quot;dcad&quot; &quot;dcba&quot; &quot;dcbb&quot;
-## [231] &quot;dcbc&quot; &quot;dcbd&quot; &quot;dcca&quot; &quot;dccb&quot; &quot;dccc&quot; &quot;dccd&quot; &quot;dcda&quot; &quot;dcdb&quot; &quot;dcdc&quot; &quot;dcdd&quot;
-## [241] &quot;ddaa&quot; &quot;ddab&quot; &quot;ddac&quot; &quot;ddad&quot; &quot;ddba&quot; &quot;ddbb&quot; &quot;ddbc&quot; &quot;ddbd&quot; &quot;ddca&quot; &quot;ddcb&quot;
-## [251] &quot;ddcc&quot; &quot;ddcd&quot; &quot;ddda&quot; &quot;dddb&quot; &quot;dddc&quot; &quot;dddd&quot;</code></pre>
-<pre class="r"><code># Note to self: &quot;letters&quot; is a built-in constant in r made up of the 26 lowercase letters and LETTERS for uppercase
-alphabet &lt;- c(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;)
-n &lt;- 256   # number of possible &quot;words&quot;
-# sequence length must= n + 3 to get n 4 letter words out of it moving window 1 letter at a time
-wordlen &lt;- 4 # word length
-letseq &lt;- vector(length=n+3)
+A &lt;- 4
+wdlen &lt;- 4     # wd = word length 
+n &lt;- A^wdlen   # number of possible &quot;words&quot;
+# sequence length must be n+3 to get &quot;n&quot; 4-letter words moving window 1 letter at a time
+letseqlen &lt;- (10*n)+3  
+letseq &lt;- vector()
 wordlist &lt;- matrix(data=NA,nrow=n,ncol=1)
-# Generate &quot;n&quot; number of letters in a sequence
-letseq &lt;- paste(sample(alphabet, n+3, replace=TRUE),collapse=&quot;&quot;)
-letseq</code></pre>
-<pre><code>## [1] &quot;acabbccaccdbadaccdadcbcadcadbccbcacabbdbbcbdabcaacacdbdbdacbcdcbddcbbdcaadbcdadcdaccbccccdbadcbbbdbbcdacaadcbcadbbbbdcacdaadbdcdabcabcbdacbddbdcdadacaacccaaaddbadbbddddaabbcbcaadcadcbbacadbaadabdbdddadbbbbbdbaabbcacabbaaabbbddbcaccbabdadaaccdabbbdaccbccbaacac&quot;</code></pre>
-<pre class="r"><code># &quot;read&quot; letters 1-4, then 2-5 ... to 256-259 into words
-for (j in 1:n){
+# Create random sequence of letters
+letseq &lt;- paste(sample(abet,letseqlen,replace=TRUE),collapse=&quot;&quot;)
+# Create a list of words
+for (j in 1:(letseqlen-3)){   
   wordlist[j] &lt;- substr(letseq,j,j+3)
 }
-wordlist</code></pre>
-<pre><code>##        [,1]  
-##   [1,] &quot;acab&quot;
-##   [2,] &quot;cabb&quot;
-##   [3,] &quot;abbc&quot;
-##   [4,] &quot;bbcc&quot;
-##   [5,] &quot;bcca&quot;
-##   [6,] &quot;ccac&quot;
-##   [7,] &quot;cacc&quot;
-##   [8,] &quot;accd&quot;
-##   [9,] &quot;ccdb&quot;
-##  [10,] &quot;cdba&quot;
-##  [11,] &quot;dbad&quot;
-##  [12,] &quot;bada&quot;
-##  [13,] &quot;adac&quot;
-##  [14,] &quot;dacc&quot;
-##  [15,] &quot;accd&quot;
-##  [16,] &quot;ccda&quot;
-##  [17,] &quot;cdad&quot;
-##  [18,] &quot;dadc&quot;
-##  [19,] &quot;adcb&quot;
-##  [20,] &quot;dcbc&quot;
-##  [21,] &quot;cbca&quot;
-##  [22,] &quot;bcad&quot;
-##  [23,] &quot;cadc&quot;
-##  [24,] &quot;adca&quot;
-##  [25,] &quot;dcad&quot;
-##  [26,] &quot;cadb&quot;
-##  [27,] &quot;adbc&quot;
-##  [28,] &quot;dbcc&quot;
-##  [29,] &quot;bccb&quot;
-##  [30,] &quot;ccbc&quot;
-##  [31,] &quot;cbca&quot;
-##  [32,] &quot;bcac&quot;
-##  [33,] &quot;caca&quot;
-##  [34,] &quot;acab&quot;
-##  [35,] &quot;cabb&quot;
-##  [36,] &quot;abbd&quot;
-##  [37,] &quot;bbdb&quot;
-##  [38,] &quot;bdbb&quot;
-##  [39,] &quot;dbbc&quot;
-##  [40,] &quot;bbcb&quot;
-##  [41,] &quot;bcbd&quot;
-##  [42,] &quot;cbda&quot;
-##  [43,] &quot;bdab&quot;
-##  [44,] &quot;dabc&quot;
-##  [45,] &quot;abca&quot;
-##  [46,] &quot;bcaa&quot;
-##  [47,] &quot;caac&quot;
-##  [48,] &quot;aaca&quot;
-##  [49,] &quot;acac&quot;
-##  [50,] &quot;cacd&quot;
-##  [51,] &quot;acdb&quot;
-##  [52,] &quot;cdbd&quot;
-##  [53,] &quot;dbdb&quot;
-##  [54,] &quot;bdbd&quot;
-##  [55,] &quot;dbda&quot;
-##  [56,] &quot;bdac&quot;
-##  [57,] &quot;dacb&quot;
-##  [58,] &quot;acbc&quot;
-##  [59,] &quot;cbcd&quot;
-##  [60,] &quot;bcdc&quot;
-##  [61,] &quot;cdcb&quot;
-##  [62,] &quot;dcbd&quot;
-##  [63,] &quot;cbdd&quot;
-##  [64,] &quot;bddc&quot;
-##  [65,] &quot;ddcb&quot;
-##  [66,] &quot;dcbb&quot;
-##  [67,] &quot;cbbd&quot;
-##  [68,] &quot;bbdc&quot;
-##  [69,] &quot;bdca&quot;
-##  [70,] &quot;dcaa&quot;
-##  [71,] &quot;caad&quot;
-##  [72,] &quot;aadb&quot;
-##  [73,] &quot;adbc&quot;
-##  [74,] &quot;dbcd&quot;
-##  [75,] &quot;bcda&quot;
-##  [76,] &quot;cdad&quot;
-##  [77,] &quot;dadc&quot;
-##  [78,] &quot;adcd&quot;
-##  [79,] &quot;dcda&quot;
-##  [80,] &quot;cdac&quot;
-##  [81,] &quot;dacc&quot;
-##  [82,] &quot;accb&quot;
-##  [83,] &quot;ccbc&quot;
-##  [84,] &quot;cbcc&quot;
-##  [85,] &quot;bccc&quot;
-##  [86,] &quot;cccc&quot;
-##  [87,] &quot;cccd&quot;
-##  [88,] &quot;ccdb&quot;
-##  [89,] &quot;cdba&quot;
-##  [90,] &quot;dbad&quot;
-##  [91,] &quot;badc&quot;
-##  [92,] &quot;adcb&quot;
-##  [93,] &quot;dcbb&quot;
-##  [94,] &quot;cbbb&quot;
-##  [95,] &quot;bbbd&quot;
-##  [96,] &quot;bbdb&quot;
-##  [97,] &quot;bdbb&quot;
-##  [98,] &quot;dbbc&quot;
-##  [99,] &quot;bbcd&quot;
-## [100,] &quot;bcda&quot;
-## [101,] &quot;cdac&quot;
-## [102,] &quot;daca&quot;
-## [103,] &quot;acaa&quot;
-## [104,] &quot;caad&quot;
-## [105,] &quot;aadc&quot;
-## [106,] &quot;adcb&quot;
-## [107,] &quot;dcbc&quot;
-## [108,] &quot;cbca&quot;
-## [109,] &quot;bcad&quot;
-## [110,] &quot;cadb&quot;
-## [111,] &quot;adbb&quot;
-## [112,] &quot;dbbb&quot;
-## [113,] &quot;bbbb&quot;
-## [114,] &quot;bbbd&quot;
-## [115,] &quot;bbdc&quot;
-## [116,] &quot;bdca&quot;
-## [117,] &quot;dcac&quot;
-## [118,] &quot;cacd&quot;
-## [119,] &quot;acda&quot;
-## [120,] &quot;cdaa&quot;
-## [121,] &quot;daad&quot;
-## [122,] &quot;aadb&quot;
-## [123,] &quot;adbd&quot;
-## [124,] &quot;dbdc&quot;
-## [125,] &quot;bdcd&quot;
-## [126,] &quot;dcda&quot;
-## [127,] &quot;cdab&quot;
-## [128,] &quot;dabc&quot;
-## [129,] &quot;abca&quot;
-## [130,] &quot;bcab&quot;
-## [131,] &quot;cabc&quot;
-## [132,] &quot;abcb&quot;
-## [133,] &quot;bcbd&quot;
-## [134,] &quot;cbda&quot;
-## [135,] &quot;bdac&quot;
-## [136,] &quot;dacb&quot;
-## [137,] &quot;acbd&quot;
-## [138,] &quot;cbdd&quot;
-## [139,] &quot;bddb&quot;
-## [140,] &quot;ddbd&quot;
-## [141,] &quot;dbdc&quot;
-## [142,] &quot;bdcd&quot;
-## [143,] &quot;dcda&quot;
-## [144,] &quot;cdad&quot;
-## [145,] &quot;dada&quot;
-## [146,] &quot;adac&quot;
-## [147,] &quot;daca&quot;
-## [148,] &quot;acaa&quot;
-## [149,] &quot;caac&quot;
-## [150,] &quot;aacc&quot;
-## [151,] &quot;accc&quot;
-## [152,] &quot;ccca&quot;
-## [153,] &quot;ccaa&quot;
-## [154,] &quot;caaa&quot;
-## [155,] &quot;aaad&quot;
-## [156,] &quot;aadd&quot;
-## [157,] &quot;addb&quot;
-## [158,] &quot;ddba&quot;
-## [159,] &quot;dbad&quot;
-## [160,] &quot;badb&quot;
-## [161,] &quot;adbb&quot;
-## [162,] &quot;dbbd&quot;
-## [163,] &quot;bbdd&quot;
-## [164,] &quot;bddd&quot;
-## [165,] &quot;dddd&quot;
-## [166,] &quot;ddda&quot;
-## [167,] &quot;ddaa&quot;
-## [168,] &quot;daab&quot;
-## [169,] &quot;aabb&quot;
-## [170,] &quot;abbc&quot;
-## [171,] &quot;bbcb&quot;
-## [172,] &quot;bcbc&quot;
-## [173,] &quot;cbca&quot;
-## [174,] &quot;bcaa&quot;
-## [175,] &quot;caad&quot;
-## [176,] &quot;aadc&quot;
-## [177,] &quot;adca&quot;
-## [178,] &quot;dcad&quot;
-## [179,] &quot;cadc&quot;
-## [180,] &quot;adcb&quot;
-## [181,] &quot;dcbb&quot;
-## [182,] &quot;cbba&quot;
-## [183,] &quot;bbac&quot;
-## [184,] &quot;baca&quot;
-## [185,] &quot;acad&quot;
-## [186,] &quot;cadb&quot;
-## [187,] &quot;adba&quot;
-## [188,] &quot;dbaa&quot;
-## [189,] &quot;baad&quot;
-## [190,] &quot;aada&quot;
-## [191,] &quot;adab&quot;
-## [192,] &quot;dabd&quot;
-## [193,] &quot;abdb&quot;
-## [194,] &quot;bdbd&quot;
-## [195,] &quot;dbdd&quot;
-## [196,] &quot;bddd&quot;
-## [197,] &quot;ddda&quot;
-## [198,] &quot;ddad&quot;
-## [199,] &quot;dadb&quot;
-## [200,] &quot;adbb&quot;
-## [201,] &quot;dbbb&quot;
-## [202,] &quot;bbbb&quot;
-## [203,] &quot;bbbb&quot;
-## [204,] &quot;bbbd&quot;
-## [205,] &quot;bbdb&quot;
-## [206,] &quot;bdba&quot;
-## [207,] &quot;dbaa&quot;
-## [208,] &quot;baab&quot;
-## [209,] &quot;aabb&quot;
-## [210,] &quot;abbc&quot;
-## [211,] &quot;bbca&quot;
-## [212,] &quot;bcac&quot;
-## [213,] &quot;caca&quot;
-## [214,] &quot;acab&quot;
-## [215,] &quot;cabb&quot;
-## [216,] &quot;abba&quot;
-## [217,] &quot;bbaa&quot;
-## [218,] &quot;baaa&quot;
-## [219,] &quot;aaab&quot;
-## [220,] &quot;aabb&quot;
-## [221,] &quot;abbb&quot;
-## [222,] &quot;bbbd&quot;
-## [223,] &quot;bbdd&quot;
-## [224,] &quot;bddb&quot;
-## [225,] &quot;ddbc&quot;
-## [226,] &quot;dbca&quot;
-## [227,] &quot;bcac&quot;
-## [228,] &quot;cacc&quot;
-## [229,] &quot;accb&quot;
-## [230,] &quot;ccba&quot;
-## [231,] &quot;cbab&quot;
-## [232,] &quot;babd&quot;
-## [233,] &quot;abda&quot;
-## [234,] &quot;bdad&quot;
-## [235,] &quot;dada&quot;
-## [236,] &quot;adaa&quot;
-## [237,] &quot;daac&quot;
-## [238,] &quot;aacc&quot;
-## [239,] &quot;accd&quot;
-## [240,] &quot;ccda&quot;
-## [241,] &quot;cdab&quot;
-## [242,] &quot;dabb&quot;
-## [243,] &quot;abbb&quot;
-## [244,] &quot;bbbd&quot;
-## [245,] &quot;bbda&quot;
-## [246,] &quot;bdac&quot;
-## [247,] &quot;dacc&quot;
-## [248,] &quot;accb&quot;
-## [249,] &quot;ccbc&quot;
-## [250,] &quot;cbcc&quot;
-## [251,] &quot;bccb&quot;
-## [252,] &quot;ccba&quot;
-## [253,] &quot;cbaa&quot;
-## [254,] &quot;baac&quot;
-## [255,] &quot;aaca&quot;
-## [256,] &quot;acac&quot;</code></pre>
-<p><strong>So, now how do I compare to see how many unique words I generated?</strong></p>
+srtwds &lt;- sort(wordlist)
+keepword &lt;- matrix(data=NA,nrow=n,ncol=1)
+k &lt;- 1
+#So, how do I see how many unique words I generated?
+for (m in 1:length(srtwds)){ 
+  if (k &gt; 255) {
+    break}
+  else {
+    if (srtwds[m] != srtwds[m+1]){
+      keepword[k] &lt;- srtwds[m]
+      k &lt;- k + 1}
+  }
+}
+length(keepword)</code></pre>
+<pre><code>## [1] 256</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 3.2.2 (2015-08-14)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -409,6 +145,7 @@ wordlist</code></pre>
 ##  [1] magrittr_1.5    tools_3.2.2     htmltools_0.2.6 yaml_2.1.13    
 ##  [5] stringi_1.0-1   rmarkdown_0.8.1 knitr_1.11      stringr_1.0.0  
 ##  [9] digest_0.6.9    evaluate_0.8</code></pre>
+</div>
 
 
 </div>

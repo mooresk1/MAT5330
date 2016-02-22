@@ -10,41 +10,49 @@ output: html_document
 
 How many characters do you expect to have to generate before you see all possible 4^4 = 256 different words?     
 
-Use a simulation to answer this question.  Run the simulation for alphabet sizes of 5, 6, and 7 with window sizes 4 and 5.     
+Use a simulation to answer this question.  Run the simulation for alphabet sizes of 5, 6, and 7 with window sizes 4 and 5.   
+*So to find all possible words, take the alphabet size and raise it to the wordlength: 4^4 = 256, 5^4=625, 6^4=1296, 7^4=2401. If the wordlength is 5, then 4^5=1024, 5^5=3125, 6^5=7776, and 7^5=16807*
 
-**The probability of getting any given combination of 4 letters is (1/4)x(1/4)x(1/4)x(1/4) = 1/256. While you will certainly get A combination of letters, the actual probability of getting a particular combination is zero? Therefore, theoretically you might NEVER get all the possible combinations**     
+**Theoretically you might NEVER get all the possible combinations**     
 
 ```{r}
 set.seed <- 256
-abet <- letters[1:4]
-A <- 4
-wdlen <- 4     # wd = word length 
-n <- A^wdlen   # number of possible "words"
-# sequence length must be n+3 to get "n" 4-letter words moving window 1 letter at a time
-letseqlen <- (10*n)+3  
-letseq <- vector()
-wordlist <- matrix(data=NA,nrow=n,ncol=1)
-# Create random sequence of letters
-letseq <- paste(sample(abet,letseqlen,replace=TRUE),collapse="")
-# Create a list of words
-for (j in 1:(letseqlen-3)){   
-  wordlist[j] <- substr(letseq,j,j+3)
-}
-srtwds <- sort(wordlist)
-seqstop <- length(srtwds)-1  
-keepword <- matrix(data=NA,ncol=1)
-k <- 1
-# m stops one early since compare is to m+1
-for (m in 1:seqstop){ 
-  if (k > 256) {  # we have found all possible words
-    break}
-  else {
-    if (srtwds[m] != srtwds[m+1]){
-      keepword[k] <- srtwds[m]
-      k <- k + 1}
+abc <- letters[1:7]
+wdlistlen <- numeric()
+L <- 1
+for (W in 4:5){      # W is window size and word length
+  for (A in 4:7){ 
+    abet <- abc[1:A]
+    n <- A^W   # number of possible "words"
+    letseqlen <- (10*n)+(W-1) #to get last few words
+    letseq <- vector()
+    wordlist <- matrix(data=NA,nrow=n,ncol=1)
+    # Create random sequence of letters
+    letseq <- paste(sample(abet,letseqlen,replace=TRUE),
+                  collapse="")
+    # Create a list of words
+    for (j in 1:(10*n)){ 
+      wordlist[j] <- substr(letseq,j,j+(W-1))}
+    srtwds <- sort(wordlist) 
+    keepword <- matrix(data=NA,ncol=1) 
+    k <- 1
+    mstop <- length(srtwds)-1
+    # m stops one early since compare is to m+1
+    for (m in 1:mstop){ 
+      if (k > n) {  # we have found all possible words
+        break}
+      else {
+        if (srtwds[m] != srtwds[m+1]){
+          keepword[k] <- srtwds[m]
+          k <- k + 1}
+      }
+    }
+    wdlistlen[L] <- length(keepword)
+    L <- L + 1 # there will be 8 word lists
   }
 }
 length(keepword)
+wdlistlen
 ```
 
 ```{r}

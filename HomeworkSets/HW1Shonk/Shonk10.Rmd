@@ -4,4 +4,28 @@ author: "Stephanie K Moore"
 date: "1/26/2016"
 output: html_document
 ---
-10. By simulation, estimate the chance of being dealt a "pair" in poker.  Compare to the theoretical value.
+## Poker Pairs ##     
+
+10. By simulation, estimate the chance of being dealt a "pair" in poker.  Compare to the theoretical value.    
+
+5-card hand, 52 card deck, 4 suits, 13 cards each. So for a pair of 7's say, 7H, 7D, 7S, 7C possible pairs: H&C H&D H&S, C&D, C&S, D&S (6 ways).
+
+**Per http://www.math.hawaii.edu/~ramsey/Probability/PokerHands.html, the theoretical probability of getting a single pair is .422569**
+
+
+```{r}
+# Create deck
+deck <- c(1:52) #1-13, 14-26, 27-39, 40-52 mod by 13
+paircount <-0
+n <- 1000
+for (t in 1:n){
+  # n = number of trials
+  hand <- sample(deck,5,replace=FALSE)
+  for (i in 1:5){
+    hand[i] <- hand[i] %% 13}
+  if (sum(duplicated(hand)) == 1){
+    paircount <- paircount + 1}
+}
+pofpair <- mean(paircount)/n
+pofpair
+```

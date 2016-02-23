@@ -10,6 +10,7 @@
 
 <meta name="author" content="Stephanie K Moore" />
 
+<meta name="date" content="2016-02-22" />
 
 <title>Shonkwiler Problem #6</title>
 
@@ -63,7 +64,7 @@ img {
 <div id="header">
 <h1 class="title">Shonkwiler Problem #6</h1>
 <h4 class="author"><em>Stephanie K Moore</em></h4>
-<h4 class="date"><em>1/26/2016</em></h4>
+<h4 class="date"><em>2016-02-22</em></h4>
 </div>
 
 
@@ -73,47 +74,63 @@ img {
 <li>Generate a sequence of characters from the alphabet {a,b,c,d} with each new character chosen with equal probability and independently of the previous choices. Now slide a “window” of length 4 along this sequence and record the words that you get.</li>
 </ol>
 <p>How many characters do you expect to have to generate before you see all possible 4^4 = 256 different words?</p>
-<p>Use a simulation to answer this question. Run the simulation for alphabet sizes of 5, 6, and 7 with window sizes 4 and 5.<br /><em>So to find all possible words, take the alphabet size and raise it to the wordlength: 4^4 = 256, 5^4=625, 6^4=1296, 7^4=2401. If the wordlength is 5, then 4^5=1024, 5^5=3125, 6^5=7776, and 7^5=16807</em></p>
+<p>Use a simulation to answer this question. Run the simulation for alphabet sizes of 5, 6, and 7 with window (wordlength) sizes 4 and 5.</p>
+<p><em>To find all possible words, take the alphabet size (A) and raise it to the wordlength (W).</em><br /><em>From <span class="math">\(4^4\)</span> to <span class="math">\(4^7\)</span> and <span class="math">\(5^4\)</span> to <span class="math">\(5^7\)</span> max words are 256, 625, 1296, 2401, 1024, 3125, 7776, and 16807.</em></p>
 <p><strong>Theoretically you might NEVER get all the possible combinations</strong></p>
-<pre class="r"><code>set.seed &lt;- 256
-abc &lt;- letters[1:7]
-wdlistlen &lt;- numeric()
+<pre class="r"><code>abc &lt;- letters[1:7]
+wordspercombo &lt;- numeric()
+nmult &lt;- numeric()            # records multiplier needed for each combination to capture all possible words 
 L &lt;- 1
-for (W in 4:5){      # W is window size and word length
+ltrseq &lt;- vector()
+maxmult &lt;- 20        # maximum multiplier we will try before quitting
+for (W in 4:5
+     ){      # W is window size and word length
   for (A in 4:7){ 
     abet &lt;- abc[1:A]
     n &lt;- A^W   # number of possible &quot;words&quot;
-    letseqlen &lt;- (10*n)+(W-1) #to get last few words
-    letseq &lt;- vector()
-    wordlist &lt;- matrix(data=NA,nrow=n,ncol=1)
-    # Create random sequence of letters
-    letseq &lt;- paste(sample(abet,letseqlen,replace=TRUE),
-                  collapse=&quot;&quot;)
-    # Create a list of words
-    for (j in 1:(10*n)){ 
-      wordlist[j] &lt;- substr(letseq,j,j+(W-1))}
-    srtwds &lt;- sort(wordlist) 
-    keepword &lt;- matrix(data=NA,ncol=1) 
-    k &lt;- 1
-    mstop &lt;- length(srtwds)-1
-    # m stops one early since compare is to m+1
-    for (m in 1:mstop){ 
-      if (k &gt; n) {  # we have found all possible words
-        break}
-      else {
-        if (srtwds[m] != srtwds[m+1]){
-          keepword[k] &lt;- srtwds[m]
-          k &lt;- k + 1}
+    for (x in 1:maxmult){
+      seqlen &lt;- (x*n)+(W-1) # add W-1 to get last few words
+      wordlist &lt;- matrix(data=NA,nrow=x*n,ncol=1)
+      # Create random sequence of letters
+      ltrseq &lt;- paste(sample(abet,seqlen,replace=TRUE),
+                     collapse=&quot;&quot;)
+      # Create a list of words
+      for (j in 1:(x*n)){   # Create x*n words because some will be duplicates
+        wordlist[j] &lt;- substr(ltrseq,j,j+(W-1))
       }
+      wordlist &lt;- sort(wordlist)      # Sort the list so duplicates show up together
+      keepword &lt;- matrix(data=NA,ncol=1)
+      k &lt;- 1
+      keepword[1] &lt;- wordlist[1] # 1st word in list sure to be unique
+      # Need to keep 1st occurrence, not last occurrence in order to get last word in array
+      mstop &lt;- length(wordlist)-1
+      # m stops one early since compare is to m+1
+      for (m in 1:mstop){ 
+        if (k &gt; n) {  # we have found all possible words
+          break}
+        else {
+          if (wordlist[m] != wordlist[m+1]){
+            keepword[k+1] &lt;- wordlist[m+1]
+            k &lt;- k + 1}
+        }
+      }
+      if (length(keepword) == n) {             # all possible words have been found, get out
+        wordspercombo[L] &lt;- length(keepword)   # this array should end up with the max words for each list 
+        nmult[L] &lt;- x                          # record multiplier used for this list
+        L &lt;- L + 1
+        break
+      }  # there will be 8 word lists 4^4 to 4^7 and 5^4 to 5^7
     }
-    wdlistlen[L] &lt;- length(keepword)
-    L &lt;- L + 1 # there will be 8 word lists
   }
 }
-length(keepword)</code></pre>
-<pre><code>## [1] 16805</code></pre>
-<pre class="r"><code>wdlistlen</code></pre>
-<pre><code>## [1]   255   624  1295  2400  1023  3124  7775 16805</code></pre>
+length(wordlist)</code></pre>
+<pre><code>## [1] 151263</code></pre>
+<pre class="r"><code>length(keepword)</code></pre>
+<pre><code>## [1] 16807</code></pre>
+<pre class="r"><code>wordspercombo</code></pre>
+<pre><code>## [1]   256   625  1296  2401  1024  3125  7776 16807</code></pre>
+<p><strong>This is the 1st 10 and last 10 entries for the last list: (to show it works correctly)</strong><br /><em>aaaaa, aaaab, aaaac, aaaad, aaaae, aaaaf, aaaag, aaaba, aaabb, aaabc and gggfd, gggfe, gggff, gggfg, gggga, ggggb, ggggc, ggggd, gggge, ggggf, ggggg</em></p>
+<p><strong>The multiplier for each sequence <span class="math">\(4^4\)</span> to <span class="math">\(4^7\)</span> and <span class="math">\(5^4\)</span> to <span class="math">\(5^7\)</span> was: 6, 10, 8, 7, 6, 8, 9, 9.</strong></p>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 3.2.2 (2015-08-14)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -131,9 +148,9 @@ length(keepword)</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] magrittr_1.5    tools_3.2.2     htmltools_0.2.6 yaml_2.1.13    
-##  [5] stringi_1.0-1   rmarkdown_0.8.1 knitr_1.11      stringr_1.0.0  
-##  [9] digest_0.6.9    evaluate_0.8</code></pre>
+##  [1] magrittr_1.5    formatR_1.2.1   tools_3.2.2     htmltools_0.2.6
+##  [5] yaml_2.1.13     stringi_1.0-1   rmarkdown_0.8.1 knitr_1.11     
+##  [9] stringr_1.0.0   digest_0.6.9    evaluate_0.8</code></pre>
 </div>
 
 

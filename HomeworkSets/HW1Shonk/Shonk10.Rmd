@@ -17,7 +17,7 @@ output: html_document
 # Create deck
 deck <- c(1:52) #1-13, 14-26, 27-39, 40-52 mod by 13
 paircount <-0
-n <- 1000
+n <- 1000000
 for (t in 1:n){
   # n = number of trials
   hand <- sample(deck,5,replace=FALSE)
@@ -26,6 +26,6 @@ for (t in 1:n){
   if (sum(duplicated(hand)) == 1){
     paircount <- paircount + 1}
 }
-pofpair <- mean(paircount)/n
+pofpair <- paircount/n
 pofpair
 ```

@@ -29,8 +29,8 @@ probofHIVwithpostest <- truepos/testpos
 ```
 **The theoretical probability of:**   
 *A true positive is `r truepos` vs. a false positive is `r falsepos`.*    
-    
-*A true negative is `r trueneg` vs. a false negative is `r falseneg`.*
+*A true negative is `r trueneg` vs. a false negative is `r falseneg`.*    
+*The probability of actually having HIV when you have a positive test result is: `r probofHIVwithpostest`.*
 
 ```{r}
 ### Simulation ###
@@ -41,14 +41,12 @@ set.seed(124)
 yesno <- c(1,0)                  # 1 = yes, has HIV, 0 = no, does not have HIV
 HIVprob <- c(0.03,0.97)          # 3 people out of 100 has HIV
 subject <- sample(yesno, X, replace = TRUE, prob = HIVprob)
-subject
 subswithHIV <- sum(subject) 
 
 # Run the HIV detection test to see if it is positive
 TF <- c(1,0)
 testprob <- c(0.98,0.02)         # test shows true result 98% of the time
 testresult <- sample(TF, X, replace = TRUE, prob = testprob)
-testresult
 truetest <- sum(testresult)
 
 # Count number of times test is pos AND the person has HIV

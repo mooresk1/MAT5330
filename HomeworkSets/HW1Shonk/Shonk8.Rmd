@@ -12,40 +12,34 @@ output: html_document
     b) Make a histogram for 200 such random walks
     c) Report the sample mean of the 200 walks
     d) Report the sample variance of the 200 walks
-    e) compare the mean and variance to their theoretical values
+    e) Compare the mean and variance to their theoretical values
     
 ```{r}
-n <- 30
-step <- vector(length=30)
-line <- vector(length=61) 
-# Pos 31 is the center (start point) 
-pos <-31
-for (i in 1:n){
-  step[i] <- rbinom(1,1,.6)       #if 1 then H, else T
-  if(step[i] == 1){
-    pos <- pos + 1
-    }
-  else{
-    pos <- pos - 1
-  }
-}
-step
-pos
-plot(step,type = "b")
-# Now simulate 200 such walks
-walks <- rbinom(200,60,.6)
+n <- 30 # number of steps
+RL <- c(-1,1) # -1 = R and +1 = L
+probRL <- c(0.6, 0.4)
+walk <- sample(RL, n, replace = TRUE, prob = probRL)
+walk
+path <- cumsum(walk)
+plot(path, main = "Walk 30 Steps with P = 0.6 You Go Right\nUp is L and Down is R",type= "b")
+
+# Now simulate 200 such walks and plot a histogram...
+walks <- rbinom(200,30,.6)  # 200 trials of 30 steps each
 emean <- mean(walks)
 evar <- var(walks)
-tmean <- 60*.6
+hist(walks, breaks = "Scott", ylab = "# of Walks with X steps Right", xlab = "# of Steps to the Right")
+
+# Theoretical mean and variance:
+tmean <- 30*.6
 tvar <- n*.6*(.4)   # binom var = n*pi*(1-pi)
 ```
 **The mean final position is `r emean`**     
 *The theoretical final position is `r tmean`.*
 
-**The mean empirical variance is `r evar`**    
+**The empirical variance is `r evar`**    
 *The theoretical variance is `r tvar`.*
 
-**The mean empirical mean is `r mean(emean)`**    
+**The empirical mean is `r mean(emean)`**    
 *The theoretical mean is `r tmean`.*
 ```{r}
 sessionInfo()

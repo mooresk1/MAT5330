@@ -1,7 +1,78 @@
 ---
 title: 'Shonkwiler Problem #13'
 author: "Stephanie K Moore"
-date: "1/26/2016"
+date: "`r Sys.Date()`"
 output: html_document
 ---
-13. An early detection test for HIV is 98% accurate.  In a certain community, 3% of the population has HIV.  What is the probability that a random person with a positive test for HIV actually has the disease?  Simulate this by selecting a person at random from the population and deciding whether or not the person has HIV.  Then administer the test and determine whether is was positive.  Keep a counter for the times that the test is positive and the times the test is positive AND the person has HIV.
+## HIV Specificity and Sensitivity ##   
+
+13. An early detection test for HIV is 98% accurate.  In a certain community, 3% of the population has HIV.  What is the probability that a random person with a positive test for HIV actually has the disease?  Simulate this by selecting a person at random from the population and deciding whether or not the person has HIV.  Then administer the test and determine whether is was positive.  Keep a counter for the times that the test is positive and the times the test is positive AND the person has HIV.   
+
+```{r}
+sens <- .98
+spec <- .98
+ispos <- .03
+isneg <- .97
+### Theoretical Probabilities ###
+# True Positive
+truepos <- sens*ispos
+# True Negative
+trueneg <- spec*isneg
+# False Positive
+falsepos <- (1-spec)*isneg
+# False Negative
+falseneg <- (1-sens)*ispos
+# Total positive tests
+testpos <- sens*(ispos) + (1.00 - spec)*(isneg)
+# Prob of having HIV given you already had a positive test
+probofHIVwithpostest <- truepos/testpos
+```
+**The theoretical probability of:**   
+*A true positive is `r truepos` vs. a false positive is `r falsepos`.*    
+    
+*A true negative is `r trueneg` vs. a false negative is `r falseneg`.*
+
+```{r}
+### Simulation ###
+X <- 1000                        # select this many people
+
+# Pick X random people and see if they actually have HIV (1 = yes, 0 = no)
+set.seed(124)
+yesno <- c(1,0)                  # 1 = yes, has HIV, 0 = no, does not have HIV
+HIVprob <- c(0.03,0.97)          # 3 people out of 100 has HIV
+subject <- sample(yesno, X, replace = TRUE, prob = HIVprob)
+subject
+subswithHIV <- sum(subject) 
+
+# Run the HIV detection test to see if it is positive
+TF <- c(1,0)
+testprob <- c(0.98,0.02)         # test shows true result 98% of the time
+testresult <- sample(TF, X, replace = TRUE, prob = testprob)
+testresult
+truetest <- sum(testresult)
+
+# Count number of times test is pos AND the person has HIV
+totpos <- 0
+actpos <- 0
+for (i in 1:X){
+  if (subject[i] == 1 & testresult[i] == 1) # subject has HIV and test result is accurate
+    {totpos <- totpos + 1
+    actpos <- actpos + 1}
+  else 
+    {if (subject[i] == 0 & testresult[i] == 0) # subject is neg but test result is false (false pos)
+      {totpos <- totpos + 1}
+    }
+}
+pHIVwPtest <- actpos/totpos
+```
+
+**Out of `r X` trials, `r subswithHIV` people had HIV. The test gave the correct result `r truetest` times.**     
+*The HIV test was positive `r totpos` times.*        
+*The HIV test was positive AND the person had HIV `r actpos` times.*    
+
+**The probability of having HIV when you have a positive test result is: `r pHIVwPtest`.**
+
+```{r}
+sessionInfo()
+```
+

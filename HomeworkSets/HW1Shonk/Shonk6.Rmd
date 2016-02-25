@@ -13,36 +13,49 @@ How many characters do you expect to have to generate before you see all possibl
 Use a simulation to answer this question.  Run the simulation for alphabet sizes of 5, 6, and 7 with window (wordlength)  sizes 4 and 5.      
 
 *To find all possible words, take the alphabet size (A) and raise it to the wordlength (W).*    
-*From $4^4$ to $4^7$ and $5^4$ to $5^7$ max words are 256, 625, 1296, 2401, 1024, 3125, 7776, and 16807.*
+*$4^4$ = 256, $5^4$ = 625, $6^4$ = 1296, $7^4$ = 2401*    
+*$4^5$ = 1024, $5^5$ = 3125, $6^5$ = 7776, $7^5$ = 16807*     
 
 **Theoretically you might NEVER get all the possible combinations**     
 
 ```{r}
+set.seed(1)
 abc <- letters[1:7]
 wordspercombo <- numeric()
-nmult <- numeric()            # records multiplier needed for each combination to capture all possible words 
+
+#####
+# This code doesn't count the minimum sequence by single letter needed, rather it creates the sequence length
+# as alphabet length raised to word length (+ wordlenght - 1). 
+# If this sequence is insufficient, it uses multipliers of the original sequence length.
+# IE, if 256 + 3 doesn't work for a 4 letter alphabet making 4-letter words, then it tries 2*256 + 3 then 3*256 + 3 etc
+# I considered that to be an acceptable overage for the number of letters needed because I felt that looping to add
+# 1 letter to the sequence at a time was too computer intensive, especially since even using multiples, I got 
+# numbers that varied with each run (randomization at work!).
+#####
+
+nmult <- numeric()            # size of multiplier needed per alpha/word length combo to capture all possible words 
 L <- 1
 ltrseq <- vector()
-maxmult <- 20        # maximum multiplier we will try before quitting
+maxmult <- 20                 # maximum multiplier we will try before quitting
 for (W in 4:5
-     ){      # W is window size and word length
-  for (A in 4:7){ 
+     ){                       # W is window size (word length)
+  for (A in 4:7){             # A is the number of letters in the alphabet
     abet <- abc[1:A]
-    n <- A^W   # number of possible "words"
+    n <- A^W                  # number of possible "words"
     for (x in 1:maxmult){
       seqlen <- (x*n)+(W-1) # add W-1 to get last few words
       wordlist <- matrix(data=NA,nrow=x*n,ncol=1)
-      # Create random sequence of letters
+      # Create a random sequence of letters
       ltrseq <- paste(sample(abet,seqlen,replace=TRUE),
                      collapse="")
-      # Create a list of words
-      for (j in 1:(x*n)){   # Create x*n words because some will be duplicates
+      # Move the window along the letter sequence and pick up W letter combinations (words)
+      for (j in 1:(x*n)){     # Create x*n words because some will be duplicates
         wordlist[j] <- substr(ltrseq,j,j+(W-1))
       }
-      wordlist <- sort(wordlist)      # Sort the list so duplicates show up together
+      wordlist <- sort(wordlist)  # Sort the list so duplicates show up together
       keepword <- matrix(data=NA,ncol=1)
       k <- 1
-      keepword[1] <- wordlist[1] # 1st word in list sure to be unique
+      keepword[1] <- wordlist[1]  # 1st word in the list is sure to be unique
       # Need to keep 1st occurrence, not last occurrence in order to get last word in array
       mstop <- length(wordlist)-1
       # m stops one early since compare is to m+1
@@ -57,21 +70,31 @@ for (W in 4:5
       }
       if (length(keepword) == n) {             # all possible words have been found, get out
         wordspercombo[L] <- length(keepword)   # this array should end up with the max words for each list 
-        nmult[L] <- x                          # record multiplier used for this list
-        L <- L + 1
+        nmult[L] <- x                          # record the multiplier needed for this list
+        L <- L + 1                             # bump the index up for the new list
         break
-      }  # there will be 8 word lists 4^4 to 4^7 and 5^4 to 5^7
+      }  
     }
   }
 }
-length(wordlist)
-length(keepword)
-wordspercombo
 ```
+
+**In order to find all 16807 possible unique words for a word length of 5 and a 7-letter alphabet, the sequence generated `r length(wordlist)` words. This means approximately only 1 word out of every `r nmult[8]` words was unique.**    
+
 **This is the 1st 10 and last 10 entries for the last list: (to show it works correctly)**    
 *`r keepword[1:10]` and `r keepword[16797:16807]`*    
 
-**The multiplier for each sequence $4^4$ to $4^7$ and $5^4$ to $5^7$ was: `r nmult`.**    
+**The multiplier used (for this randomized trial) for each for all possible 4-letter words with a**   
+**4-letter alphabet was `r nmult[1]`**    
+**5-letter alphabet was `r nmult[2]`**    
+**6-letter alphabet was `r nmult[3]`**    
+**7-letter alphabet was `r nmult[4]`**    
+
+**while the multiplier used to find all possible words for 5-letter words with a**   
+**4-letter alphabet was `r nmult[5]`**    
+**5-letter alphabet was `r nmult[6]`**    
+**6-letter alphabet was `r nmult[7]`**    
+**7-letter alphabet was `r nmult[8]`**    
 
 ```{r}
 sessionInfo()

@@ -1,21 +1,38 @@
 ---
 title: "WarrenBuffetMoveOver"
 author: "Stephanie K Moore"
-date: "2/24/2016"
+date: "`r Sys.Date()`"
 output: html_document
 ---
+## Project #3: Warren Buffet ##
+*This project requires that we find out the probability of becoming a millionaire over a 30-year time span. We can choose from 3 companies Red (high risk), Yellow (moderate risk) or Green (low risk). We begin with $1000? and we may choose our goal and our strategy. At the minimum, we need to find out if we invest all in Red, all in Yellow or all in Green for 30 years, the probability of becoming a millionaire in each of those scenarios.*    
 
 ```{r}
-probred <- c(.05,.2,1,3,3,3)
-probyel <- c(.8,.9,1.1,1.1,1.2,1.4)
-probgrn <- c(.95,1,1,1,1,1.1)
-n <- 100000 # number of trials
-s <- 6 # total sides of die
-roll <- sample(1:6,n,replace=TRUE)
-exval <- probcolor^#times it is rolled)*(1/6)
-varibycolor <- (exval - prob of num) + (exval - prob of 2) + ... +(exval - prob of 6) all times 1/6 
+amt <- 1000 # dollars, initially
+
+p.red <- c(.05,.2,1,3,3,3)         # .05 means you lose 95%, 3 means you gain 3x)
+ev.red <- amt*(sum(p.red))/6       # expected value of red, each side of die eq. prob. or 1/6
+p.yel <- c(.8,.9,1.1,1.1,1.2,1.4)
+ev.yel <- amt*(sum(p.yel))/6
+p.grn <- c(.95,1,1,1,1,1.1)
+ev.grn <- amt*(sum(p.grn))/6
+
+n <- 10 # number of trials
+t <- 30 # number of years
+
+roll30 <- (sample(1:6,t,replace=TRUE))
+
+partial <- numeric()
+
+for (i in 1:6){
+  partial[i] <- amt*(p.red[i]^sum(roll30 == i))
 }
-plot(1:150,cdf/n,type="l")
+outcome.r <- sum(partial)*amt
+outcome.r
+
+
+##varibycolor <- (exval - prob of num) + (exval - prob of 2) + ... +(exval - prob of 6) all times 1/6 
+##plot(1:150,cdf/n,type="l")
 ```
 
 

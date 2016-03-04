@@ -1,0 +1,72 @@
+---
+title: "WarrenBuffetStepRYG"
+author: "Stephanie K Moore"
+date: "3/3/2016"
+output: html_document
+---
+This code built off of Warren Buffet Move Over. This time I'll try and step thru all combos of R Y and G.
+```{r}
+# Investment Portfolios, Numbers Cannot Be Changed #
+
+R <- c(.05,.2,1,3,3,3)         # high risk, high return
+Y <- c(.8,.9,1.1,1.1,1.2,1.4)  # med risk, med return
+G <- c(.95,1,1,1,1,1.1)        # low risk, low return
+
+####################################################################
+#####                      My Scenario                         #####
+# I will roll one number to apply to all risk categories.          #
+# My thinking is that either it's a good year for all or it's not. #
+# I want to have at least 5 million in 20 years for retirement.    #
+# I start with $5000 due to my age.                                #
+####################################################################
+goal <- 5000000
+t <- 20 # number of years
+yr <- numeric(t+1)  # peryr[1] is start of 20 years; peryr[21] is end of 20th year
+yr[1] <- 5000 # Init amount for each trial
+n <- 1000 # number of trials (repeat chosen scenario to thoroughly test it)
+tresults <- numeric(n) # store results of "n" trials
+
+##### Ratios to Test #####
+#rval <- list(.65, .50, .75, .65)
+#yval <- list(.30, .30, .20, .35)
+#gval <- list(.05, .20, .05, 0.00)
+```
+
+```{r}
+# Set up matrix to store results of each ratio after n trial of 20 yrs each 
+# rdata col 1-3 = rval, yval, gval (ratios used), col 4 = mean earnings
+rdata <- matrix(nrow = 100^3, ncol = 4) 
+```
+
+```{r}
+# Loops: Outer to Inner --> each ratio (k), for n trials (j), for 20 years (i)
+for (k in 1:100) {
+  perR <- as.numeric(1 - 0.01*k)
+  perY <- as.numeric(1 - perR)
+  perG <- as.numeric(1 - perR - perY)
+  
+  for (j in 1:1000) {
+    
+    for (i in 1:20) {
+      roll <- sample(1:6,1,replace=TRUE) # roll 1 number and apply to R, G, and Y
+      yr[i+1] <- (R[roll]*as.numeric(perR) + Y[roll]*as.numeric(perY) + G[roll]*as.numeric(perG))*yr[i]
+    }
+    
+    tresults[j] <- yr[t+1]
+  }
+  
+  rdata[k,1] <- as.numeric(perR)
+  rdata[k,2] <- as.numeric(perY)
+  rdata[k,3] <- as.numeric(perG)
+  rdata[k,4] <- as.numeric(sum(tresults >= goal))
+}  
+rdata[1:100,1:4]
+yr
+tresults[1:10]
+roll
+perG
+```
+
+```{r}
+sessionInfo()
+```

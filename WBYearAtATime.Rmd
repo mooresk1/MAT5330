@@ -1,0 +1,31 @@
+---
+title: "WarrenBuffetMoveOver"
+author: "Stephanie K Moore"
+date: "2/24/2016"
+output: html_document
+---
+
+```{r}
+# Investment Portfolios, Numbers Cannot Be Changed #
+R <- c(0.05,0.2,1.0,3.0,3.0,3.0)   # high risk, high return
+Y <- c(0.8,0.9,1.1,1.1,1.2,1.4)    # med risk, med return
+G <- c(0.95,1.0,1.0,1.0,1.0,1.1)   # low risk, low return
+i <- 1
+j <- 1
+yr <- numeric()  # peryr[1]=start of 20 yrs; peryr[21]=end
+yr[1] <- 5000 # Init amount for each trial
+tresults <- numeric(20) # store results of "n" trials
+r <- 20
+```
+
+```{r}
+perR <- .1
+perY <- .1
+perG <- .8
+roll <- sample(1:6,1,replace=TRUE) 
+yr[i+1] <- (R[roll]*as.numeric(perR) + Y[roll]*as.numeric(perY) + G[roll]*as.numeric(perG))*yr[i]
+tresults[i] <- yr[i+1]
+tresults
+i <- i + 1
+```
+

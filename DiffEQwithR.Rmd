@@ -1,0 +1,27 @@
+---
+title: "DiffEQwithR"
+author: "Stephanie K Moore"
+date: "3/14/2016"
+output: html_document
+---
+
+```{r}
+library(deSolve)
+d <- 1
+b <- 1
+population <- function(t,init,parameters)
+{
+  with(as.list(c(init,parameters)),{
+    dp <- b*p-d*p # birth - death
+    
+    list(c(dp))  # >1 entry if >1 equation
+    
+  })
+}
+
+times <- seq(0,10,by=0.1)
+init <- c(p=10)
+
+out <- ode(y=init,time=times,func=population,parms=NULL)
+plot(out[,1],out[,2]) # 1st col = time, 2nd col = pop
+```

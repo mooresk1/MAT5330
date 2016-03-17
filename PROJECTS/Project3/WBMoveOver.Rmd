@@ -1,11 +1,11 @@
 ---
-title: "WarrenBuffetMoveOver"
+title: "WarrenBuffettMoveOver"
 author: "Stephanie K Moore"
 date: "2/24/2016"
 output: html_document
 ---
 
-## Warren Buffet Move Over    
+## Warren Buffett Move Over    
 
 
                      My Scenario                         
@@ -18,68 +18,59 @@ output: html_document
  at least 5 million
 
 ```{r}
-# Investment Portfolios, Numbers Cannot Be Changed #
 
+# Investment Portfolios, Numbers Cannot Be Changed #
 R <- c(0.05,0.2,1.0,3.0,3.0,3.0)   # high risk, high return
 Y <- c(0.8,0.9,1.1,1.1,1.2,1.4)    # med risk, med return
 G <- c(0.95,1.0,1.0,1.0,1.0,1.1)   # low risk, low return
 
-goal <- 5000000
-t <- 20 # number of years
+amt <- c(1000,5000,10000)
+tamt <- numeric
+goal <- c(1000000,3000000,5000000)
+tgoal <- numeric
+met <- numeric
+t <- 20      # number of years
+n <- 10      # number of trials
+
 yr <- numeric(t+1)  
-# peryr[1] is start of 20 years; peryr[21] is end of 20th year
-yr[1] <- 5000   # Init amount for each trial
-n <- 10000      # number of trials 
-tresults <- numeric(n) # store results of "n" trials
+# yr[1] is start of 20 years; yr[21] is end of 20th year
+
+tresults <- numeric(t) # store results from each trial
 
 ##### Ratios to Test #####
-rval <- list(1,0,0)
-yval <- list(0,1,0)
-gval <- list(0,0,1)
-```
+rval <- list(1,0,0,.60,.65,.70,.75)
+yval <- list(0,1,0,.40,.35,.30,.25)
+gval <- list(0,0,1,0,0,0,0)
 
-##### Ratios to Test #####
-rval <- list(.68,.68,.68,.68,.69,.69,.69,.69,.70,.70,.70,.70)
-yval <- list(.32,.31,.30,.29,.31,.30,.29,.28,.30,.29,.28,.27)
-gval <- list(0,.01,.02,.03,0,.01,.02,.03,0,.01,.02,.03)
-
-# .50 .30 .20 definitely not as good, elim 0.75, .20 .05 
-NOTE: 3/8/16 No matter what I do, I cannot seem to hit my $5 million goal more than about 10% of the time. I also appear to hit below $1 million about 80% of the time, which just goes to show that to reach that goal it really is a gamble -- you either win big or lose big.
-```{r}
-# Set up matrix to store results of each ratio after n trial of 20 yrs each 
-# rdata col 1-3 = rval, yval, gval (ratios used), col 4 = total < $1,000,000 col 5 = total >= $5,000,000, col 6 = mean won/lost 
-rdata <- matrix(nrow = length(rval), ncol = 6) 
-```
-
-```{r}
-# Loops: Outer to Inner --> each ratio (k), for n trials (j), for 20 years (i)
-for (k in 1:length(rval)) {
-  # Percent of total money invested in each category
-  perR <- rval[k]
-  perY <- yval[k]
-  perG <- gval[k]
-  
-  for (j in 1:n) {
-    
-    for (i in 1:t) {
-      roll <- sample(1:6,1,replace=TRUE) # roll 1 number and apply to R, G, and Y
-      yr[i+1] <- (R[roll]*as.numeric(perR) + Y[roll]*as.numeric(perY) + G[roll]*as.numeric(perG))*yr[i]
-    }
-    
-    tresults[j] <- yr[t+1]
+for (g in 1:length(goal)) {
+  tgoal <- goal[g]             # 3 diff goals
+  for (a in 1:length(amt)) {
+    tamt <- amt[a]             # 3 init amts
+    for (p in 1:length(rval)) { # 7 diff ratios
+      writeLines(paste("******* NEW RATIOS *******"))
+      writeLines(paste("GOAL =", goal[g], "INIT AMT =", amt[a], "R/Y/G DISTRIB = ", rval[p], yval[p], gval[p], "#TRIALS = ",n)) 
+      for (j in 1:n) {         # 10 trials
+        met <- 0  # set goal not met at begin of each trial
+        yr[1] <- tamt          # set init amt for ea trial
+        for (i in 1:t) {       # 20 years
+          if (met != 1) {
+            roll <- sample(1:6,1,replace=TRUE)
+            yr[i+1] <- (R[roll]*as.numeric(rval[p]) + Y[roll]*as.numeric(yval[p]) + G[roll]*as.numeric(gval[p]))*yr[i]
+            if (yr[i+1] >= goal[g]) {
+              writeLines(paste("For Trial #", j, "Goal Has Been Met in Year ", i, "!!!")) 
+            } 
+          }
+        } 
+        print(yr[2:21]) 
+        tresults[j] <- yr[t+1]  # store n trials
+      }
+      writeLines(paste("@@@ After n TRIALS @@@")) 
+      print(tresults) 
+      writeLines(paste("Accumulations by Year")) 
+      writeLines(paste("# of trials < $1,000,000 = ", as.numeric(sum(tresults < 1000000)))) 
+      writeLines(paste("# of trials goal is met = ", as.numeric(sum(tresults >= goal[g])))) 
+    } 
   }
-  
-  rdata[k,1] <- as.numeric(rval[k])
-  rdata[k,2] <- as.numeric(yval[k])
-  rdata[k,3] <- as.numeric(gval[k])
-  rdata[k,4] <- as.numeric(sum(tresults < 1000000)) 
-  rdata[k,5] <- as.numeric(sum(tresults >= goal))
-  rdata[k,6] <- as.numeric(sum(tresults)/n)
-}  
-rdata
-
+}
 ```
 
-```{r}
-sessionInfo()
-```

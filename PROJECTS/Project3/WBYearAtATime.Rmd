@@ -7,25 +7,31 @@ output: html_document
 
 ```{r}
 # Investment Portfolios, Numbers Cannot Be Changed #
-R <- c(0.05,0.2,1.0,3.0,3.0,3.0)   # high risk, high return
-Y <- c(0.8,0.9,1.1,1.1,1.2,1.4)    # med risk, med return
-G <- c(0.95,1.0,1.0,1.0,1.0,1.1)   # low risk, low return
-i <- 1
-j <- 1
-yr <- numeric()  # peryr[1]=start of 20 yrs; peryr[21]=end
-yr[1] <- 5000 # Init amount for each trial
-tresults <- numeric(20) # store results of "n" trials
-r <- 20
-```
+R <- c(0.05,0.2,1.0,3.0,3.0,3.0)   # high risk, high return  $10.25 on $6
+Y <- c(0.8,0.9,1.1,1.1,1.2,1.4)    # med risk, med return     $6.60 on $6
+G <- c(0.95,1.0,1.0,1.0,1.0,1.1)   # low risk, low return     $6.05 on $6
 
-```{r}
-perR <- .1
-perY <- .1
-perG <- .8
-roll <- sample(1:6,1,replace=TRUE) 
-yr[i+1] <- (R[roll]*as.numeric(perR) + Y[roll]*as.numeric(perY) + G[roll]*as.numeric(perG))*yr[i]
-tresults[i] <- yr[i+1]
+yr <- numeric()  # peryr[1]=start of 20 yrs; peryr[21]=end
+yr[1] <- 10000 # Init amount for each trial
+tresults <- numeric(20) # store results of "n" trials
+hit5 <- 0
+tot5 <- 0
+
+perR <- .75
+perY <- .25
+perG <- 0
+for (j in 1:10000) {
+  for (i in 1:20) {
+    roll <- sample(1:6,1,replace=TRUE) 
+    yr[i+1] <- (R[roll]*as.numeric(perR) + Y[roll]*as.numeric(perY) + G[roll]*as.numeric(perG))*yr[i]
+    tresults[i] <- yr[i+1]
+    if (tresults[i] >= 1000000) {hit5 <- 1}
+  }
+  tot5 <- tot5 + hit5
+  hit5 <- 0
+}
 tresults
-i <- i + 1
+hit5
+tot5
 ```
 

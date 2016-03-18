@@ -1,0 +1,62 @@
+---
+title: "Project 3"
+author: "Stephanie K Moore"
+date: "`r Sys.Date()`"
+output: html_document
+---
+## Project #3: Warren Buffet ##
+
+```{r}
+n <- 10000 # number of trials
+t <- 20 # number of years
+initamt <- 5000 
+goal <- 3000000
+
+# Returns on Investment Portfolios 
+r.ret <- c(.05,.2,1,3,3,3)        
+y.ret <- c(.8,.9,1.1,1.1,1.2,1.4)
+g.ret <- c(.95,1,1,1,1,1.1)
+
+# Expected Values of Each
+ev.red <- signif(initamt*(sum(r.ret))/6, digits = 6) 
+ev.yel <- signif(initamt*(sum(y.ret))/6, digits = 6)
+ev.grn <- signif(initamt*(sum(g.ret))/6, digits = 6)
+
+ev.all <- c(ev.red,ev.yel,ev.grn)
+ev.all
+
+t.yr.amt <- numeric(n)
+
+for (j in 1:n) { 
+  r.per <- 0.7 # Select % distribution by fund (1 = 100%)
+  y.per <- 0.3
+  g.per <- 0
+  writeLines(paste("Trial #",j))
+  roll <- (sample(1:6,t,replace=TRUE)) # roll 20 times
+  writeLines(paste("The roll was:")) 
+  print(roll)
+  yr.amt <- rep(0,t+1) # init to 21 yrs of zeros per trial
+  yr.amt[1] <- initamt
+  
+  for (i in 1:t) { 
+    r.amt <- r.ret[roll[i]]*r.per*yr.amt[i]
+    y.amt <- y.ret[roll[i]]*y.per*yr.amt[i]
+    g.amt <- g.ret[roll[i]]*g.per*yr.amt[i]
+    yr.amt[i+1] <- r.amt + y.amt + g.amt
+    if (yr.amt[i+1] >= goal) {
+      r.per <- 0
+      y.per <- 0
+      g.per <- 1
+    }
+  }
+  writeLines(paste("and the outcome of 20 yrs was:", yr.amt[21]))
+  t.yr.amt[j] <- yr.amt[21]
+}
+goalmet <- sum(t.yr.amt >= goal)
+writeLines(paste("The goal was met", goalmet, "times"))
+```
+
+
+```{r}
+sessionInfo()
+```

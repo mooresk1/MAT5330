@@ -7,6 +7,9 @@ output: html_document
 ## Project #3: Warren Buffet ##
 
 ```{r}
+library(knitr)
+knitr::opts_chunk$set(comment = NA, fig.width = 5, fig.align = "center", scipen = 999)
+
 n <- 10000 # number of trials
 t <- 20 # number of years
 initamt <- 5000 
@@ -53,10 +56,13 @@ for (j in 1:n) {
   t.yr.amt[j] <- yr.amt[21]
 }
 goalmet <- sum(t.yr.amt >= goal)
+onemil <- sum(t.yr.amt >= 1000000)
 writeLines(paste("The goal was met", goalmet, "times"))
-```
+summary(t.yr.amt)
+maxa <- format(max(t.yr.amt),scientific = F)
+meana <- format(mean(t.yr.amt),scientific = F)
 
-
-```{r}
-sessionInfo()
 ```
+#### The goal was met `r goalmet` times.
+**The maximum accumulation was: `r maxa` and the mean accumulation was `r meana`.**   
+**If the goal was only $1 million, then it would have been met `r onemil` times.**

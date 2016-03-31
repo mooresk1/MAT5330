@@ -1,0 +1,45 @@
+---
+title: "Mar30DEs"
+author: "Stephanie K Moore"
+date: "3/30/2016"
+output: html_document
+---
+
+S + E <--> C --> P + E
+
+```{r}
+library(deSolve)
+n <- 
+S0 <- 10000
+E0 <- 10 
+C0 <- 0 
+P0 <- 0
+k1f <- .001
+k1r <- .001
+k2f <- .1
+Pss <- 0
+enzyme <- function(t, init, parameters)
+{
+  with(as.list(c(init,parameters)),{
+    # F = Ft - B
+    dB <- kf*(Ft - B)*n*C^n-kr*B
+    dC <- kr*B - n*kf*(Ft - B)*C^n
+    
+    list(c(dB,dC))  # >1 entry if >1 equation
+    
+  })
+}
+
+times <- seq(0,L,by = x)
+for (i in 1:100) {
+  C0 <- 10*i
+init <- c(B=B0,C=C0)
+
+out <- ode(y=init,time=times,func=calcium,parms=NULL)
+
+Bss[i] <- out[1000,2][[1]]
+}
+plot(out[,1],out[,2],type = "l") # 1st col = time, 2nd col = B col 3 = C
+plot(out[,1],out[,3],type = "l")
+plot(Bss)
+```

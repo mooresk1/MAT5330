@@ -1,0 +1,47 @@
+---
+title: "ChemKineticsHW"
+author: "Stephanie K Moore"
+date: "3/25/2016"
+output: html_document
+---
+nC + F --> <-- k1 k-1 B n=1 Ft = 100 Ci = 10,000 Bss = ?
+
+```{r}
+library(deSolve)
+n <- 1
+Ft <- 100
+C0 <- 10000
+F0 <- 100
+B0 <- 0
+kf <- 0.1
+kr <- 0.1
+L <- 100
+s <- .1
+Bss <- numeric(100)
+calcium <- function(t, init, parameters)
+{
+  with(as.list(c(init,parameters)),{
+    # F = Ft - B
+    dB <- kf*(Ft - B)*n*C^n-kr*B
+    dC <- kr*B - n*kf*(Ft - B)*C^n
+    
+    list(c(dB,dC))  # >1 entry if >1 equation
+    
+  })
+}
+
+times <- seq(0,L,by = s)
+for (i in 1:100) {
+  C0 <- 10*i
+init <- c(B=B0,C=C0)
+
+out <- ode(y=init,time=times,func=calcium,parms=NULL)
+
+Bss[i] <- out[1000,2][[1]]
+}
+plot(out[,1],out[,2],type = "l") # 1st col = time, 2nd col = B col 3 = C
+plot(out[,1],out[,3],type = "l")
+plot(Bss)
+```
+
+```

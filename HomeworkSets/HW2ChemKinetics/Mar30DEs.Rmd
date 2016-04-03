@@ -4,26 +4,31 @@ author: "Stephanie K Moore"
 date: "3/30/2016"
 output: html_document
 ---
-
 S + E <--> C --> P + E
 
 ```{r}
+library(knitr)
+knitr::opts_chunk$set(comment = NA, fig.width = 5, fig.align = "center")
+
 library(deSolve)
 library(ggplot2)
 library(gridExtra)
-t <- 
+
+tstart <- 0
+tstop <- 600
+tby <- 0.1
 S0 <- 10
 E0 <- 10 
 C0 <- 0 
 P0 <- 0
 k1f <- .001
 k1r <- .001
-k2 <- .1
+k2 <- .001
 
 enzyme <- function(t, init, parameters)
 {
   with(as.list(c(init,parameters)),{
-    dS <- k1r*C-k1f*S*E
+    dS <- k1r*C - k1f*S*E
     dE <- -k1f*S*E + k1r*C + k2*C
     dC <- k1f*S*E - k1r*C - k2*C
     dP <- k2*C
@@ -31,14 +36,17 @@ enzyme <- function(t, init, parameters)
   })
 }
 
-times <- seq(0,1000,by = .1)
+times <- seq(tstart, tstop, by = tby)
 init <- c(S=S0,E=E0,C=C0,P=P0)
 
+tmain <- paste("tby =",tby,"k1f =",k1f,"k1r =",k1r,"k2 =",k2)
 out <- ode(y=init,time=times,func=enzyme,parms=NULL)
+plot(out[,1],out[,2], type = "l",col="red",ylim=c(0,10),
+     main = tmain)  
+lines(out[,1],out[,3], type = "l",col="blue")
+lines(out[,1],out[,4], type = "l",col="green")
+lines(out[,1],out[,5], type = "l",col="cyan")
 
-p1 <- plot(out[,1],out[,2], type = "l") 
-p2 <- plot(out[,1],out[,3], type = "l")
-p3 <- plot(out[,1],out[,4], type = "l")
-p4 <- plot(out[,1],out[,5], type = "l")
-grid.arrange(p1,p2,p3,p4,col=4)
 ```
+    
+

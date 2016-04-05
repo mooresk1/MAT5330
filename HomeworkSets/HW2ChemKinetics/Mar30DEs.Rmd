@@ -21,9 +21,9 @@ S0 <- 10
 E0 <- 10 
 C0 <- 0 
 P0 <- 0
-k1f <- .001
-k1r <- .001
-k2 <- .001
+k1f <- .01
+k1r <- .01
+k2 <- .1
 
 enzyme <- function(t, init, parameters)
 {
@@ -41,11 +41,11 @@ init <- c(S=S0,E=E0,C=C0,P=P0)
 
 tmain <- paste("tby =",tby,"k1f =",k1f,"k1r =",k1r,"k2 =",k2)
 out <- ode(y=init,time=times,func=enzyme,parms=NULL)
-plot(out[,1],out[,2], type = "l",col="red",ylim=c(0,10),
+plot(out[,1],out[,2], type = "l",col="blue",ylim=c(0,10),
      main = tmain)  
-lines(out[,1],out[,3], type = "l",col="blue")
-lines(out[,1],out[,4], type = "l",col="green")
-lines(out[,1],out[,5], type = "l",col="cyan")
+lines(out[,1],out[,3], type = "l",col="green")
+lines(out[,1],out[,4], type = "l",col="red")
+lines(out[,1],out[,5], type = "l",col="black")
 
 ```
     

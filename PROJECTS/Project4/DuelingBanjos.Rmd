@@ -1,8 +1,8 @@
 ---
-title: "CreekFlowRate"
+title: "Group Creek Project - Do You Hear the Banjos?"
 author: "Stephanie K Moore"
 date: "4/5/2016"
-output: html_document
+output: pdf_document
 ---
 Measurements were taken 5 days:
 Mon 3/28/16 about 6-7 pm

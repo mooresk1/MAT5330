@@ -38,7 +38,7 @@ vol <- numeric(4)
 
 # Calculate volume of creek at 4 locations #
 for (m in 1:4) {
-  area <- .5*measure[m,4]*(measure[m,1]+measure[m,3])+.25*measure[m,4]*(2*measure[m,2]-measure[m,1]-measure[m,3])
+  area <- measure[m,2]*measure[m,4]
   vol[m] <- area*pipelen
 }
 vol
@@ -94,6 +94,10 @@ loc <- c(rep(1:4,5))
 flow <- data.frame(day,loc,rate)
 flow$day <- factor(flow$day)
 flow
+```
+
+```{r}
+
 ```
 
 

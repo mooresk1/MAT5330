@@ -1,0 +1,27 @@
+---
+title: "findingk"
+author: "Stephanie K Moore"
+date: "4/8/2016"
+output: html_document
+---
+
+```{r}
+oflow <- c(13.2,26.09,21.34,9.4)
+odepth <- c(1.25,.583,.542,1.67)
+tdepth <- c(1.84,1.6,2.11)
+tflow <- c(27.9,8.96,51.8)
+flowq <- numeric(12)
+depthq <- numeric(12)
+i <- 1
+for (t in 1:3) {
+  for (o in 1:4) {
+    flowq[i] <- tflow[t]/oflow[o]
+    depthq[i] <- tdepth[t]/odepth[o]
+    i <- i + 1
+  }
+}
+flowq
+depthq
+k <- mean(oflow)/mean(tflow)
+k
+```

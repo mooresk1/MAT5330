@@ -13,35 +13,35 @@ Thu 4/7/16 about 5:30-6:30 pm following rain!
 
 ```{r}
 library(ggplot2)
-library(DT)
+library(knitr)
+knitr::opts_chunk$set(comment = NA, fig.width = 10.28,fig.height = 7.48, fig.align = "center")
 
-# Store temperature for each of 5 days in Fahrenheit #
-temp <- matrix(data=c(66,45,67,44,55),nrow=5,ncol=1,byrow=FALSE)
+pipelen <- 4.00
 
-# Convert temp to Celsius #
-for (c in 1:5) {
-  temp[c] <- (5/9)*(temp[c]-32)
-}
-temp 
-
-pipelen <- 48*2.54/100
-
-#measure holds near, middle and far depths, width, and volume at 4 locations in meters #
 measure <- matrix(data=NA,nrow=4,ncol=4,byrow=TRUE,dimnames=list(c(1:4),c("Near Depth","Mid-Depth","Far Depth","Width"))) 
 
-measure[1,] <- c(.1524,.3810,.1778,3.7846) 
-measure[2,] <- c(.0889,.1778,.1016,1.6256) 
-measure[3,] <- c(.1143,.1651,.0762,2.7432) 
-measure[4,] <- c(.2032,.5080,.1397,3.8354) 
+measure[1,] <- c(.5000,1.2500,.5833,12.4167) 
+measure[2,] <- c(.2917,.5833,.3333,5.3333) 
+measure[3,] <- c(.3750,.5417,.2500,9.000) 
+measure[4,] <- c(.6667,1.6667,.4583,12.5833) 
 
-vol <- numeric(4)
+rectvol <- numeric(4)
 
 # Calculate volume of creek at 4 locations #
 for (m in 1:4) {
   area <- measure[m,2]*measure[m,4]
-  vol[m] <- area*pipelen
+  rectvol[m] <- area*pipelen
 }
-vol
+rectvol
+
+pentvol <- numeric(4)
+
+# Calculate volume of creek at 4 locations #
+for (m in 1:4) {
+  area <- .25*measure[m,4]*(2*measure[m,2]-measure[m,1]-measure[m,3])+.5*measure[m,4]*(measure[m,1]+measure[m,3])
+  pentvol[m] <- area*pipelen
+}
+pentvol
 
 # Define a matrix to hold data for 3 trials each at 4 locations for 5 days #
 timemx <- matrix(data=NA,nrow=20,ncol=4,byrow=TRUE,dimnames=list(c(1:20),c("Trial 1","Trial 2","Trial 3","Mean Sec")))
@@ -84,7 +84,7 @@ rate <- numeric(20)
 for (i in 1:20) {
   for (p in 1:4) {
     if (timemx[i,4] != 0) {
-      rate[i] <- vol[p]/timemx[i,4]}
+      rate[i] <- pentvol[p]/timemx[i,4]}
     else {
       rate[i] <- 0}
   }
@@ -94,20 +94,20 @@ loc <- c(rep(1:4,5))
 flow <- data.frame(day,loc,rate)
 flow$day <- factor(flow$day)
 flow
+mean(flow$rate[1:3])
+mean(flow$rate[5:7])
+mean(flow$rate[9:12])
+mean(flow$rate[13:16])
+mean(flow$rate[17:20])
 ```
-
-```{r}
-
-```
-
 
 ```{r}
 g1 <- ggplot(data=flow, aes(x=loc,y=rate,fill=day)) +
   geom_bar(stat="identity",position="dodge") +
-  scale_y_continuous(limit=c(0.0000,.7000)) + 
+  scale_y_continuous(limit=c(0.0000,35.0000)) + 
   scale_color_manual(values = c("#DB2202","#0ECFE9","purple","#349D5C","orange")) +
-  labs(x="Locations \n 1 = Durham,           2 = Parking Deck,           3 = Walker,           4 = Depot"
-       ,y="Flow Rate \n (meters cubed per second)", title = "Flow Rate by Location") +
+  labs(x="Locations \n 1 = Durham           2 = Roess           3 = Walker           4 = Depot"
+       ,y="Flow Rate \n (feet cubed per second)", title = "Flow Rate by Location") +
     theme_bw()
 plot(g1) 
 

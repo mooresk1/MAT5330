@@ -1,0 +1,19 @@
+---
+title: "FinalModelingProject"
+author: "Stephanie K Moore"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+This is an improved version of the "Food for Thought" problem in Chapter 6 of our textbook.
+
+I am planning to write code so that a user can input the # of items to be scheduled (not necessarily food items) and what items need to be done in what order as well as the length of time each item requires.   
+
+```{r}
+n <- 0 # number of items
+itemnum <- c(1:n) # items will be numbered in order they appear in "items"
+items <- c("names of items")
+dependencies <- c(0,0) # replace with #s of items this one depends on
+iteminfo <- data.frame(itemnum,items,dependencies) # all need to be equal length
+names(iteminfo) <- c("Item#","Item","Dependencies","Time Needed") # variable names 
+```
+

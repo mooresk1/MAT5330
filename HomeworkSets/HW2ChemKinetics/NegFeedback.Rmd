@@ -1,0 +1,70 @@
+---
+title: "NegFeedback"
+author: "Stephanie K Moore"
+date: "3/30/2016"
+output: pdf_document
+---
+A+B <--> C --> D (k1f, k1r, k3f)
+2B + C <--> E (k2f, k2r)
+A + C <--> F (k4f, k4r
+
+```{r}
+library(knitr)
+knitr::opts_chunk$set(comment = NA, fig.width = 5, fig.height = 10, fig.align = "center")
+
+library(deSolve)
+library(ggplot2)
+library(gridExtra)
+
+tstart <- 0
+tstop <- 10
+tby <- 0.1
+A0 <- 10^5
+B0 <- 10^5
+C0 <- 0 # want 10
+D0 <- 0
+E0 <- 0
+#F0 <- 0
+k1f <- .03   # adds C,   subs A&B
+k1r <- .03  # adds A&B, subs C
+k2f <- 1.05  # adds E,   subs B&C
+k2r <- .4  # adds B&C
+k3f <- .01  # adds D,   subs C
+k4f <- .08  # adds C,   subs A&E
+k4r <- .2   # adds A&E, subs C
+
+
+negfeed <- function(t, init, parameters)
+{
+  with(as.list(c(init,parameters)),{
+    dA <- k1r*C - k1f*A*B - 1.5*k4f*A^1.5*C + 1.5*k4r*F 
+    dB <- k1r*C - k1f*A*B - 1.5*k2f*B^1.5*C + 1.5*k2r*E
+    dC <- k1f*A*B - k1r*C - k3f*C - k2f*B^1.5*C - k4f*A^1.5*C + k2r*E + k4r*F
+    dD <- k3f*C
+    dE <- k2f*B^1.5*C - k2r*E
+#    dF <- k4f*A^1.5*C - k4r*F
+    list(c(dA,dB,dC,dD,dE))  
+  })
+}
+
+times <- seq(tstart, tstop, by = tby)
+init <- c(A=A0,B=B0,C=C0,D=D0,E=E0)
+
+tmain <- paste("tby =",tby,"k1f =",k1f,"k1r =",k1r,"k2f =",k2f,"k2r =",k2r,"k3f =",k3f,
+               "k4f =",k4f,"k4r =",k4r)
+out <- ode(y=init,time=times,func=negfeed,parms=NULL)
+out
+
+#axis(2, at = seq(0,100000,by=10000))  
+#pch=21 WAS working at one point with type="p"
+#lines(out[,1],out[,7], type = "l", col="pink")
+
+plot(out[,1],out[,2], type = "l", col="purple", ylim=c(0,40000),main = tmain) 
+lines(out[,1],out[,3], type = "l", col="green")   
+lines(out[,1],out[,4], type = "p", pch=21, col="red")   
+lines(out[,1],out[,5], type = "l", col="black")   
+lines(out[,1],out[,6], type = "l", col="blue")
+
+```
+    
+

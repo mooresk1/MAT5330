@@ -1,0 +1,78 @@
+---
+title: "FinalProject"
+author: "Stephanie K Moore"
+date: "5/5/2016"
+output: html_document
+---
+
+```{r}
+t <- 100
+trialmaxrating <- numeric(t)
+trialmaxnumskills <- numeric(t) 
+  
+p <- 8 
+cand <- matrix(nrow=8,ncol=12)
+
+q <- 10
+qual <- c("Fr","Ger","acct","IQ","start","tact","type","punc","loyal","humor")
+hasqual <- vector(mode="character",length=10)
+skills <- numeric()
+for (k in 1:t) { # for t trials
+  for (i in 1:p) { # with 8 candidates each
+    skills <- sample(1:10,10,replace=TRUE) # assign each skill a level 1-10 with 10 highest
+    cand[i,1] <- mean(skills) # candidate rating is means of her skills
+    cand[i,2] <- sum(skills >= 5) # how many skills were greater than or equal to 5?
+    for (j in 1:q) { # check on 10 skills
+      if (skills[j] >= 5) 
+      {cand[i,j+2] <- qual[j]}
+      else {
+        cand[i,j+2] <- "NA"}
+    }
+  }
+  trialmaxrating[k] <- max(cand[i,1])
+  trialmaxnumskills[k] <- max(cand[i,2])
+}
+trialmaxrating
+trialmaxnumskills
+```
+
+```{r}
+trials <- as.data.frame(c(1:100))
+rdata <- as.data.frame(trialmaxrating)
+library(ggplot2)
+#ggplot(rdata) +
+#  geom_density()
+mean(as.numeric(trialmaxrating))
+max(trialmaxrating)
+sdata <- as.data.frame(trialmaxnumskills) 
+mean(as.numeric(trialmaxnumskills))
+max(trialmaxnumskills)
+#ggplot(trials, aes(trialmaxnumskills)) +
+#  geom_density()
+x <- c(1,2,3,4,5,6,7,8,9,10)
+mnx <- mean(x)
+sum(x)
+sdx <-sd(x)
+sd1 <- mnx + sdx
+sd2 <- mnx + 2*sdx
+sd3 <- mnx + 3*sdx
+sdm1 <- mnx - sdx
+sdm2 <- mnx - 2*sdx
+sdm3 <- mnx - 3*sdx
+c(sdm3,sdm2,sdm1,mnx,sd1,sd2,sd3)
+eins <- pnorm(1,mnx,sdx)
+zwei <- pnorm(2,mnx,sdx) - eins
+drei <- pnorm(3,mnx,sdx) - eins - zwei
+vier <- pnorm(4,mnx,sdx) - eins - zwei - drei
+funf <- pnorm(5,mnx,sdx) - eins - zwei - drei - vier
+sechs <- pnorm(6,mnx,sdx) - eins - zwei - drei - vier - funf
+sieben <- pnorm(7,mnx,sdx) - eins - zwei - drei - vier - funf - sechs
+ocht <- pnorm(8,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben
+neun <- pnorm(9,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben - ocht
+zehn <- pnorm(10,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben - ocht - neun
+whole <- eins + zwei + drei + vier + funf + sechs + sieben + ocht + neun + zehn
+ys <- c(eins,zwei,drei,vier,funf,sechs,sieben,ocht,neun,zehn)
+whole
+ys
+plot(x,ys)
+```

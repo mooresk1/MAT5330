@@ -6,73 +6,120 @@ output: html_document
 ---
 
 ```{r}
-t <- 100
-trialmaxrating <- numeric(t)
-trialmaxnumskills <- numeric(t) 
-  
-p <- 8 
-cand <- matrix(nrow=8,ncol=12)
+library(ggplot2)
+library(msm)
+library(DT)
 
-q <- 10
+t <- 1000
+trialmaxrating <- numeric(t)
+trialmaxskills <- numeric(t) 
+trialmaxcombo <- numeric(t)
+trialmeanrating <- numeric(t)
+trialmeanskills <- numeric(t)
+trialmeancombo <- numeric(t)
+  
+p <- 8     # p = num people interviewed
+cand <- matrix(nrow=8,ncol=13)
+
+q <- 10    # q = num qualities sought
 qual <- c("Fr","Ger","acct","IQ","start","tact","type","punc","loyal","humor")
 hasqual <- vector(mode="character",length=10)
-skills <- numeric()
+
+skills <- numeric()  # skill lvl of ea quality 1-10 (ten high)
+
 for (k in 1:t) { # for t trials
   for (i in 1:p) { # with 8 candidates each
-    skills <- sample(1:10,10,replace=TRUE) # assign each skill a level 1-10 with 10 highest
+    skills <- sample(1:10,10,replace=TRUE)
     cand[i,1] <- mean(skills) # candidate rating is means of her skills
-    cand[i,2] <- sum(skills >= 5) # how many skills were greater than or equal to 5?
+    cand[i,2] <- sum(skills >= 5) # num skills gt or eq to 5?
+    cand[i,3] <- mean(skills) + sum(skills >= 5) 
     for (j in 1:q) { # check on 10 skills
-      if (skills[j] >= 5) 
-      {cand[i,j+2] <- qual[j]}
+      if (skills[j] >= 5) {
+        cand[i,j+3] <- qual[j]}
       else {
-        cand[i,j+2] <- "NA"}
+        cand[i,j+3] <- "NA"}
     }
   }
-  trialmaxrating[k] <- max(cand[i,1])
-  trialmaxnumskills[k] <- max(cand[i,2])
-}
-trialmaxrating
-trialmaxnumskills
+  trialmaxrating[k] <- max(cand[i,1]) # record max rating for this trial
+  trialmeanrating[k] <- mean(as.numeric(cand[i,1])) # mean rating for this trial
+  trialmaxskills[k] <- max(cand[i,2]) # record max skills this trial
+  trialmeanskills[k] <- mean(as.numeric(cand[i,2])) # mean skills this trial
+  trialmaxcombo[k] <- max(cand[i,3]) # max combo rate + skills this trial
+  trialmeancombo[k] <- mean(as.numeric(cand[i,3])) # mean combo this trial
+} 
+trialmaxrating[1:16]
+trialmaxskills[1:16]
+trialmaxcombo[1:16]
+trialmeanrating[1:16]
+trialmeanskills[1:16]
+trialmeancombo[1:16]
+
+
 ```
 
 ```{r}
-trials <- as.data.frame(c(1:100))
-rdata <- as.data.frame(trialmaxrating)
-library(ggplot2)
-#ggplot(rdata) +
-#  geom_density()
-mean(as.numeric(trialmaxrating))
-max(trialmaxrating)
-sdata <- as.data.frame(trialmaxnumskills) 
-mean(as.numeric(trialmaxnumskills))
-max(trialmaxnumskills)
-#ggplot(trials, aes(trialmaxnumskills)) +
-#  geom_density()
+
+mean(as.numeric(trialmaxrating)) # mean max rating over all trials
+max(trialmaxrating) # max rating over all trials
+
+mean(as.numeric(trialmaxskills)) # mean of max skills all trials
+max(trialmaxskills) # max skills over all trials
+
+mean(as.numeric(trialmaxcombo)) # mean of max skills all trials
+max(trialmaxcombo) # max skills over all trials
+
 x <- c(1,2,3,4,5,6,7,8,9,10)
 mnx <- mean(x)
 sum(x)
 sdx <-sd(x)
-sd1 <- mnx + sdx
-sd2 <- mnx + 2*sdx
-sd3 <- mnx + 3*sdx
-sdm1 <- mnx - sdx
-sdm2 <- mnx - 2*sdx
-sdm3 <- mnx - 3*sdx
-c(sdm3,sdm2,sdm1,mnx,sd1,sd2,sd3)
-eins <- pnorm(1,mnx,sdx)
-zwei <- pnorm(2,mnx,sdx) - eins
-drei <- pnorm(3,mnx,sdx) - eins - zwei
-vier <- pnorm(4,mnx,sdx) - eins - zwei - drei
-funf <- pnorm(5,mnx,sdx) - eins - zwei - drei - vier
-sechs <- pnorm(6,mnx,sdx) - eins - zwei - drei - vier - funf
-sieben <- pnorm(7,mnx,sdx) - eins - zwei - drei - vier - funf - sechs
-ocht <- pnorm(8,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben
-neun <- pnorm(9,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben - ocht
-zehn <- pnorm(10,mnx,sdx) - eins - zwei - drei - vier - funf - sechs - sieben - ocht - neun
-whole <- eins + zwei + drei + vier + funf + sechs + sieben + ocht + neun + zehn
-ys <- c(eins,zwei,drei,vier,funf,sechs,sieben,ocht,neun,zehn)
-whole
-ys
-plot(x,ys)
+
+tnd <- dtnorm(1:10,mnx,sdx,1,10)
+tnd
+tnddf <- as.data.frame(tnd)
+# These are expected values not actual trial values
+DT::datatable(tnddf, rownames = c("%Rated 1","%Rated 2","%Rated 3",
+                                  "%Rated 4","%Rated 5","%Rated 6",
+                                  "%Rated 7","%Rated 8","%Rated 9",
+                                  "%Rated 10"))
+
+tnp <- ptnorm(1:10,mnx,sdx,1,10) 
+tnp
+
+plot(1:10,tnp)
+plot(1:10,tnd)
+
+rdf <- as.data.frame(trialmeanrating)
+
+gtmr <- ggplot(data=rdf, aes(x=rdf$trialmeanrating,fill="blue")) + 
+  geom_histogram(binwidth=1, colour = "blue", alpha = 0.3, position="dodge") +
+  labs(x = "Mean Rating", y="Count", title = "Mean Rating by Trial") +
+  scale_x_continuous(breaks=1:10) +
+  scale_y_continuous(breaks = seq(0, 700, by = 50)) +
+  theme_bw() +
+  guides(fill=FALSE)
+gtmr
+
+sdf <- as.data.frame(trialmeanskills)
+
+gtms <- ggplot(data=sdf, aes(x=sdf$trialmeanskills,fill="blue")) + 
+  geom_histogram(binwidth=1, colour = "black", alpha = 0.3, position="dodge") +
+  labs(x = "Mean # Skills", y="Count", title = "Mean Number Skills by Trial") +
+  scale_x_continuous(breaks=1:10) +
+  scale_y_continuous(breaks = seq(0, 700, by = 50)) +
+  theme_bw() +
+  guides(fill=FALSE)
+gtms
+
+cdf <- as.data.frame(trialmeancombo)
+
+gtmc <- ggplot(data=cdf, aes(x=cdf$trialmeancombo,fill="blue")) + 
+  geom_histogram(binwidth=1, colour = "green", alpha = 0.3, position="dodge") +
+  labs(x = "Mean Rating + Skills", y="Count", title = "Mean Rating + Skill Combo by Trial") +
+  scale_x_continuous(breaks=1:20) +
+  scale_y_continuous(breaks = seq(0, 200, by = 20)) +
+  theme_bw() +
+  guides(fill=FALSE)
+gtmc
 ```
+
+
